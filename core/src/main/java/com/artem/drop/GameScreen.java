@@ -56,9 +56,9 @@ public class GameScreen implements Screen {
 
         bucketRectangle = new Rectangle();
         dropRectangle = new Rectangle();
+
         dropTimer = 0f;
         dropsGathered = 0;
-
     }
 
     @Override

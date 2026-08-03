@@ -30,7 +30,7 @@ public class Drop extends Game {
 
         context = new GameContext(new SpriteBatch(), font, viewport, assets);
 
-        this.setScreen(new MainMenuScreen(this, context));
+        this.setScreen(new MainMenuScreen(this));
 
         Gdx.app.log("Game", "Game started.");
     }

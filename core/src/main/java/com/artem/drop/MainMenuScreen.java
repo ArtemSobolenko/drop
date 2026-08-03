@@ -15,9 +15,9 @@ public class MainMenuScreen implements Screen {
     private final FitViewport viewport;
     private final AssetService assetService;
 
-    public MainMenuScreen(Drop game, final GameContext gameContext) {
+    public MainMenuScreen(Drop game) {
         this.game = game;
-        this.gameContext = gameContext;
+        this.gameContext = game.getContext();
         this.viewport = gameContext.viewport();
         this.assetService = gameContext.assetService();
     }
