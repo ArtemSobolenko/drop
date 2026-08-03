@@ -1,14 +1,14 @@
 package com.artem.drop.service;
 
-import com.artem.drop.Drop;
+import com.artem.drop.DropGame;
 import com.artem.drop.screen.GameScreen;
 import com.artem.drop.screen.MainMenuScreen;
 
 public class DefaultScreenNavigator implements ScreenNavigator {
 
-    private final Drop game;
+    private final DropGame game;
 
-    public DefaultScreenNavigator(Drop game) {
+    public DefaultScreenNavigator(DropGame game) {
         this.game = game;
     }
 

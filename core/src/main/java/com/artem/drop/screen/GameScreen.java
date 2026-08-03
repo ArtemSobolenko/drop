@@ -121,6 +121,7 @@ public class GameScreen implements Screen {
 
     private void logic(float delta) {
 
+        //clamp bucket
         bucket.setX(MathUtils.clamp(bucket.getX(), 0, viewport.getWorldWidth() - bucket.getWidth()));
 
         for (int i = dropSprites.size - 1; i >= 0; i--) {

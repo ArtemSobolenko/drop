@@ -18,7 +18,7 @@ import static com.artem.drop.GameConstants.WORLD_WIDTH;
 
 @Slf4j
 @Getter
-public class Drop extends Game {
+public class DropGame extends Game {
 
     private GameContext context;
 

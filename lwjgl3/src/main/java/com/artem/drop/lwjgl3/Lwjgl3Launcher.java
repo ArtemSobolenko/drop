@@ -1,6 +1,6 @@
 package com.artem.drop.lwjgl3;
 
-import com.artem.drop.Drop;
+import com.artem.drop.DropGame;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
@@ -12,7 +12,7 @@ public class Lwjgl3Launcher {
     }
 
     private static Lwjgl3Application createApplication() {
-        return new Lwjgl3Application(new Drop(), getDefaultConfiguration());
+        return new Lwjgl3Application(new DropGame(), getDefaultConfiguration());
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
