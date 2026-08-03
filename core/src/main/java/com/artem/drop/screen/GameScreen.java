@@ -42,6 +42,8 @@ public class GameScreen implements Screen {
     private float dropTimer;
     private int dropsGathered;
 
+    private boolean dragging = false;
+
     public GameScreen(final GameContext context) {
 
         this.gameContext = context;
@@ -102,7 +104,18 @@ public class GameScreen implements Screen {
         if (desktopPlayerInput.isTouched()) {
             Vector2 touchPos = desktopPlayerInput.getTouchPos();
             viewport.unproject(touchPos);
-            bucket.setCenterX(touchPos.x);
+
+            if (desktopPlayerInput.isJustTouched()) {
+                dragging = bucket.getBounds().contains(touchPos);
+            }
+
+            if (!desktopPlayerInput.isTouched()) {
+                dragging = false;
+            }
+
+            if (dragging) {
+                bucket.setCenterX(touchPos.x);
+            }
         }
     }
 

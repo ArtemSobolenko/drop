@@ -34,6 +34,12 @@ public class DesktopPlayerInput implements PlayerInput {
         return Gdx.input.isTouched();
     }
 
+    @Override
+    public boolean isJustTouched() {
+        return Gdx.input.justTouched();
+    }
+
+    @Override
     public Vector2 getTouchPos() {
         touchPos.set(Gdx.input.getX(), Gdx.input.getY());
         return touchPos;
