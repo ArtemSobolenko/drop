@@ -3,7 +3,6 @@ package com.artem.drop.service;
 import com.artem.drop.Drop;
 import com.artem.drop.screen.GameScreen;
 import com.artem.drop.screen.MainMenuScreen;
-import com.badlogic.gdx.Gdx;
 
 public class DefaultScreenNavigator implements ScreenNavigator {
 
@@ -16,12 +15,10 @@ public class DefaultScreenNavigator implements ScreenNavigator {
     @Override
     public void showMainMenu() {
         game.setScreen(new MainMenuScreen(game.getContext()));
-        Gdx.app.log("Game", "Main Menu Loaded.");
     }
 
     @Override
     public void showGame() {
         game.setScreen(new GameScreen(game.getContext()));
-        Gdx.app.log("Game", "Game Screen Loaded.");
     }
 }

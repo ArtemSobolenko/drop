@@ -25,8 +25,6 @@ public class AssetService {
         assetManager.load("main_menu.mp3", Music.class);
 
         assetManager.finishLoading();
-
-        Gdx.app.log("Game", "All assets loaded.");
     }
 
     public Texture getMainBackgroundTexture() {
@@ -89,6 +87,5 @@ public class AssetService {
 
     public void disposeAllAssets() {
         assetManager.dispose();
-        Gdx.app.log("Game", "All assets disposed.");
     }
 }

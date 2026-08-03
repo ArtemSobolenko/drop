@@ -9,15 +9,19 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 //import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
+@Slf4j
 @Getter
 public class Drop extends Game {
 
     private GameContext context;
 
     public void create() {
+
+        log.info("Game created.");
 
         // use libGDX's default font
         BitmapFont font = new BitmapFont();
@@ -30,6 +34,7 @@ public class Drop extends Game {
 
         AssetService assets = new AssetService();
         assets.loadAllAssets();
+        log.info("All assets loaded.");
 
         //or with FreeTypeFontGenerator
 
@@ -48,8 +53,7 @@ public class Drop extends Game {
             .build();
 
         defaultScreenNavigator.showMainMenu();
-
-        Gdx.app.log("Game", "Game started.");
+        log.info("Main Menu Loaded.");
     }
 
     public void render() {
@@ -58,6 +62,7 @@ public class Drop extends Game {
 
     public void dispose() {
         context.disposeAll();
+        log.info("Game Context disposed.");
     }
 
 }
