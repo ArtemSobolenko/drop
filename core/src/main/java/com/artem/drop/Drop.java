@@ -28,9 +28,12 @@ public class Drop extends Game {
 
         //or with FreeTypeFontGenerator
 
-        context = new GameContext(new SpriteBatch(), font, viewport, assets);
+        DefaultScreenNavigator defaultScreenNavigator
+            = new DefaultScreenNavigator(this);
 
-        this.setScreen(new MainMenuScreen(this));
+        context = new GameContext(new SpriteBatch(), font, viewport, assets, defaultScreenNavigator);
+
+        defaultScreenNavigator.showMainMenu();
 
         Gdx.app.log("Game", "Game started.");
     }

@@ -7,5 +7,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public record GameContext(SpriteBatch spriteBatch,
                           BitmapFont bitmapFont,
                           FitViewport viewport,
-                          AssetService assetService) {
+                          AssetService assetService,
+                          DefaultScreenNavigator defaultScreenNavigator) {
 }

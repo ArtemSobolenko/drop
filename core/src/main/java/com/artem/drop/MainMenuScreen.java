@@ -10,14 +10,12 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class MainMenuScreen implements Screen {
 
-    private final Drop game;
     private final GameContext gameContext;
     private final FitViewport viewport;
     private final AssetService assetService;
 
-    public MainMenuScreen(Drop game) {
-        this.game = game;
-        this.gameContext = game.getContext();
+    public MainMenuScreen(GameContext gameContext) {
+        this.gameContext = gameContext;
         this.viewport = gameContext.viewport();
         this.assetService = gameContext.assetService();
     }
@@ -42,7 +40,7 @@ public class MainMenuScreen implements Screen {
         spriteBatch.end();
 
         if (Gdx.input.isTouched()) {
-            game.setScreen(new GameScreen(gameContext));
+            gameContext.defaultScreenNavigator().showGame();
         }
     }
 
