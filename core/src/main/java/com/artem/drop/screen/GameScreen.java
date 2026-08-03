@@ -1,9 +1,9 @@
 package com.artem.drop.screen;
 
 import com.artem.drop.GameContext;
+import com.artem.drop.entity.Bucket;
 import com.artem.drop.input.DesktopPlayerInput;
 import com.artem.drop.service.AssetService;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -16,6 +16,10 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.artem.drop.GameConstants.DEFAULT_SPEED;
+import static com.artem.drop.GameConstants.DEFAULT_SPEED_MULTIPLIER;
+import static com.artem.drop.GameConstants.DEFAULT_SPEED_VOLUME;
+
 @Slf4j
 public class GameScreen implements Screen {
 
@@ -25,9 +29,7 @@ public class GameScreen implements Screen {
 
     private final DesktopPlayerInput desktopPlayerInput;
 
-    private Sprite bucketSprite;
-
-    private Vector2 touchPos;
+    private Bucket bucket;
 
     private Array<Sprite> dropSprites;
 
@@ -35,7 +37,6 @@ public class GameScreen implements Screen {
 
     private final SpriteBatch spriteBatch;
 
-    private Rectangle bucketRectangle;
     private Rectangle dropRectangle;
 
     private float dropTimer;
@@ -52,14 +53,10 @@ public class GameScreen implements Screen {
         this.viewport = context.viewport();
         this.spriteBatch = context.spriteBatch();
 
-        bucketSprite = new Sprite(assetService.getBucketTexture());
-        bucketSprite.setSize(1, 1);
-
-        touchPos = new Vector2();
+        bucket = new Bucket(new Sprite(assetService.getBucketTexture()));
 
         dropSprites = new Array<>();
 
-        bucketRectangle = new Rectangle();
         dropRectangle = new Rectangle();
 
         dropTimer = 0f;
@@ -74,6 +71,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        viewport.apply();
         input(delta);
         logic(delta);
         draw();
@@ -81,37 +79,36 @@ public class GameScreen implements Screen {
 
     private void input(float delta) {
 
-        float speed = 4f;
+        float speed = DEFAULT_SPEED;
+        float dx;
 
         if (desktopPlayerInput.isLeftShiftPressed()) {
-            speed *= 2;
-            assetService.getSpeedSound().play(.1f);
+            speed *= DEFAULT_SPEED_MULTIPLIER;
+            assetService.getSpeedSound().play(DEFAULT_SPEED_VOLUME);
         }
 
         //move right
         if (desktopPlayerInput.isMoveRightPressed()) {
-            bucketSprite.translateX(speed * delta);
+            dx = speed * delta;
+            bucket.move(dx);
         }
 
         //move left
         if (desktopPlayerInput.isMoveLeftPressed()) {
-            bucketSprite.translateX(-speed * delta);
+            dx = speed * delta;
+            bucket.move(-dx);
         }
 
         if (desktopPlayerInput.isTouched()) {
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+            Vector2 touchPos = desktopPlayerInput.getTouchPos();
             viewport.unproject(touchPos);
-            bucketSprite.setCenterX(touchPos.x);
+            bucket.setCenterX(touchPos.x);
         }
     }
 
     private void logic(float delta) {
 
-        float bucketWidth = bucketSprite.getWidth();
-        float bucketHeight = bucketSprite.getHeight();
-
-        bucketSprite.setX(MathUtils.clamp(bucketSprite.getX(), 0, viewport.getWorldWidth() - bucketWidth));
-        bucketRectangle.set(bucketSprite.getX(), bucketSprite.getY(), bucketWidth, bucketHeight);
+        bucket.setX(MathUtils.clamp(bucket.getX(), 0, viewport.getWorldWidth() - bucket.getWidth()));
 
         for (int i = dropSprites.size - 1; i >= 0; i--) {
             Sprite dropSprite = dropSprites.get(i);
@@ -123,7 +120,7 @@ public class GameScreen implements Screen {
 
             if (dropSprite.getY() < -dropHeight) {
                 dropSprites.removeIndex(i);
-            } else if (bucketRectangle.overlaps(dropRectangle)) {
+            } else if (bucket.getBounds().overlaps(dropRectangle)) {
                 dropsGathered++;
                 dropSprites.removeIndex(i);
                 assetService.getDropSound().play();
@@ -141,7 +138,6 @@ public class GameScreen implements Screen {
 
         ScreenUtils.clear(Color.BLACK);
 
-        viewport.apply();
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
 
         spriteBatch.begin();
@@ -150,7 +146,8 @@ public class GameScreen implements Screen {
         float worldHeight = viewport.getWorldHeight();
 
         spriteBatch.draw(assetService.getBackgroundTexture(), 0, 0, worldWidth, worldHeight);
-        bucketSprite.draw(spriteBatch);
+
+        bucket.render(spriteBatch);
 
         gameContext.bitmapFont()
             .draw(spriteBatch, "Drops collected: " + dropsGathered, 0, worldHeight);
@@ -195,6 +192,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        //  assetService.disposeAllAssets(); do not call this here
+        //do not call dispose here
     }
 }
