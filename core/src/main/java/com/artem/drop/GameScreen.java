@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -16,7 +15,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class GameScreen implements Screen {
 
-    private final Drop game;
+    private final GameContext gameContext;
 
     private final AssetService assetService;
 
@@ -36,11 +35,9 @@ public class GameScreen implements Screen {
     private float dropTimer;
     private int dropsGathered;
 
-    public GameScreen(final Drop game) {
+    public GameScreen(final GameContext context) {
 
-        this.game = game;
-
-        GameContext context = game.getContext();
+        this.gameContext = context;
 
         this.assetService = context.assetService();
 
@@ -148,9 +145,8 @@ public class GameScreen implements Screen {
         spriteBatch.draw(assetService.getBackgroundTexture(), 0, 0, worldWidth, worldHeight);
         bucketSprite.draw(spriteBatch);
 
-        BitmapFont bitmapFont = game.getContext().bitmapFont();
-
-        bitmapFont.draw(spriteBatch, "Drops collected: " + dropsGathered, 0, worldHeight);
+        gameContext.bitmapFont()
+            .draw(spriteBatch, "Drops collected: " + dropsGathered, 0, worldHeight);
 
         for (Sprite dropSprite : dropSprites) {
             dropSprite.draw(spriteBatch);
