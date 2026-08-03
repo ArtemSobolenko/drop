@@ -4,12 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class GameScreen implements Screen {
 
@@ -23,27 +26,38 @@ public class GameScreen implements Screen {
 
     private Array<Sprite> dropSprites;
 
+    private final FitViewport viewport;
+
+    private final SpriteBatch spriteBatch;
+
     private Rectangle bucketRectangle;
     private Rectangle dropRectangle;
 
     private float dropTimer;
     private int dropsGathered;
 
-    public GameScreen(final Drop game, AssetService assetService) {
+    public GameScreen(final Drop game) {
 
         this.game = game;
 
-        this.assetService = assetService;
+        GameContext context = game.getContext();
+
+        this.assetService = context.assetService();
+
+        this.viewport = context.viewport();
+        this.spriteBatch = context.spriteBatch();
 
         bucketSprite = new Sprite(assetService.getBucketTexture());
         bucketSprite.setSize(1, 1);
 
         touchPos = new Vector2();
 
+        dropSprites = new Array<>();
+
         bucketRectangle = new Rectangle();
         dropRectangle = new Rectangle();
-
-        dropSprites = new Array<>();
+        dropTimer = 0f;
+        dropsGathered = 0;
 
     }
 
@@ -80,22 +94,19 @@ public class GameScreen implements Screen {
 
         if (Gdx.input.isTouched()) {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY());
-            game.viewport.unproject(touchPos);
+            viewport.unproject(touchPos);
             bucketSprite.setCenterX(touchPos.x);
         }
     }
 
     private void logic() {
 
-        float worldWidth = game.viewport.getWorldWidth();
-        float worldHeight = game.viewport.getWorldHeight();
-
         float bucketWidth = bucketSprite.getWidth();
         float bucketHeight = bucketSprite.getHeight();
 
         float delta = Gdx.graphics.getDeltaTime();
 
-        bucketSprite.setX(MathUtils.clamp(bucketSprite.getX(), 0, worldWidth - bucketWidth));
+        bucketSprite.setX(MathUtils.clamp(bucketSprite.getX(), 0, viewport.getWorldWidth() - bucketWidth));
         bucketRectangle.set(bucketSprite.getX(), bucketSprite.getY(), bucketWidth, bucketHeight);
 
         for (int i = dropSprites.size - 1; i >= 0; i--) {
@@ -106,8 +117,9 @@ public class GameScreen implements Screen {
             dropSprite.translateY(-2f * delta);
             dropRectangle.set(dropSprite.getX(), dropSprite.getY(), dropWidth, dropHeight);
 
-            if (dropSprite.getY() < -dropHeight) dropSprites.removeIndex(i);
-            else if (bucketRectangle.overlaps(dropRectangle)) {
+            if (dropSprite.getY() < -dropHeight) {
+                dropSprites.removeIndex(i);
+            } else if (bucketRectangle.overlaps(dropRectangle)) {
                 dropsGathered++;
                 dropSprites.removeIndex(i);
                 assetService.getDropSound().play();
@@ -125,23 +137,26 @@ public class GameScreen implements Screen {
 
         ScreenUtils.clear(Color.BLACK);
 
-        game.viewport.apply();
-        game.batch.setProjectionMatrix(game.viewport.getCamera().combined);
-        game.batch.begin();
+        viewport.apply();
+        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
 
-        float worldWidth = game.viewport.getWorldWidth();
-        float worldHeight = game.viewport.getWorldHeight();
+        spriteBatch.begin();
 
-        game.batch.draw(assetService.getBackgroundTexture(), 0, 0, worldWidth, worldHeight);
-        bucketSprite.draw(game.batch);
+        float worldWidth = viewport.getWorldWidth();
+        float worldHeight = viewport.getWorldHeight();
 
-        game.font.draw(game.batch, "Drops collected: " + dropsGathered, 0, worldHeight);
+        spriteBatch.draw(assetService.getBackgroundTexture(), 0, 0, worldWidth, worldHeight);
+        bucketSprite.draw(spriteBatch);
+
+        BitmapFont bitmapFont = game.getContext().bitmapFont();
+
+        bitmapFont.draw(spriteBatch, "Drops collected: " + dropsGathered, 0, worldHeight);
 
         for (Sprite dropSprite : dropSprites) {
-            dropSprite.draw(game.batch);
+            dropSprite.draw(spriteBatch);
         }
 
-        game.batch.end();
+        spriteBatch.end();
     }
 
     private void createDroplet() {
@@ -149,21 +164,18 @@ public class GameScreen implements Screen {
         float dropWidth = 1;
         float dropHeight = 1;
 
-        float worldWidth = game.viewport.getWorldWidth();
-        float worldHeight = game.viewport.getWorldHeight();
-
         Sprite dropSprite = new Sprite(assetService.getDropTexture());
 
         dropSprite.setSize(dropWidth, dropHeight);
-        dropSprite.setX(MathUtils.random(0F, worldWidth - dropWidth));
-        dropSprite.setY(worldHeight);
+        dropSprite.setX(MathUtils.random(0F, viewport.getWorldWidth() - dropWidth));
+        dropSprite.setY(viewport.getWorldHeight());
 
         dropSprites.add(dropSprite);
     }
 
     @Override
     public void resize(int width, int height) {
-        game.viewport.update(width, height, true);
+        viewport.update(width, height, true);
     }
 
     @Override

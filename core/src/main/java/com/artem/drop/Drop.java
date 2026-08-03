@@ -10,35 +10,33 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class Drop extends Game {
 
-    public SpriteBatch batch;
-    public BitmapFont font;
-    public FitViewport viewport;
-    private final AssetService assetService;
-
-    public Drop() {
-        this.assetService = new AssetService();
-    }
+    private GameContext context;
 
     public void create() {
 
-        batch = new SpriteBatch();
-
         // use libGDX's default font
-        font = new BitmapFont();
+        BitmapFont font = new BitmapFont();
 
-        viewport = new FitViewport(8, 5);
+        FitViewport viewport = new FitViewport(8, 5);
 
         //font has 15pt, but we need to scale it to our viewport by ratio of viewport height to screen height
         font.setUseIntegerPositions(false);
         font.getData().setScale(viewport.getWorldHeight() / Gdx.graphics.getHeight());
 
+        AssetService assets = new AssetService();
+        assets.loadAllAssets();
+
         //or with FreeTypeFontGenerator
 
-        assetService.loadAllAssets();
+        context = new GameContext(new SpriteBatch(), font, viewport, assets);
 
-        this.setScreen(new MainMenuScreen(this, assetService));
+        this.setScreen(new MainMenuScreen(this, context));
 
         Gdx.app.log("Game", "Game started.");
+    }
+
+    public GameContext getContext() {
+        return context;
     }
 
     public void render() {
@@ -46,8 +44,9 @@ public class Drop extends Game {
     }
 
     public void dispose() {
-        batch.dispose();
-        font.dispose();
+        context.spriteBatch().dispose();
+        context.bitmapFont().dispose();
+        context.assetService().disposeAllAssets();
     }
 
 }
