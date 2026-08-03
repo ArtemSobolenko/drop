@@ -3,33 +3,19 @@ package com.artem.drop;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class GameScreen implements Screen {
 
     final Drop game;
 
     private final AssetService assetService;
-
-   // Texture backgroundTexture;
-   // Texture bucketTexture;
-   // Texture dropTexture;
-
-  //  Sound dropSound;
-  //  Sound speedSound;
-
- //   Music music;
 
     Sprite bucketSprite;
 
@@ -50,19 +36,6 @@ public class GameScreen implements Screen {
         this.assetService = new AssetService();
         assetService.loadAllAssets();
 
-        // load the images for the background, bucket and droplet
-       // backgroundTexture = new Texture("background.png");
-      //  bucketTexture = new Texture("bucket.png");
-        //dropTexture = new Texture("drop.png");
-
-        // load the drop sound effect and background music
-     //   dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.mp3"));
-      //  speedSound = Gdx.audio.newSound(Gdx.files.internal("speed.mp3"));
-
-//        music = assetService.getMusic();
-//        music.setLooping(true);
-//        music.setVolume(0.5F);
-
         bucketSprite = new Sprite(assetService.getBucketTexture());
         bucketSprite.setSize(1, 1);
 
@@ -77,11 +50,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        // start the playback of the background music
-        // when the screen is shown
-//        Music music = assetService.getMusic();
-//        music.setLooping(true);
-//        music.setVolume(0.5F);
+        // start the playback of the background music when the screen is shown
         assetService.getConfiguredMusic().play();
     }
 
@@ -212,12 +181,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-       // backgroundTexture.dispose();
-     //   dropSound.dispose();
-     //   music.dispose();
-      //  dropTexture.dispose();
-        //bucketTexture.dispose();
-
         assetService.disposeAllAssets();
     }
 }

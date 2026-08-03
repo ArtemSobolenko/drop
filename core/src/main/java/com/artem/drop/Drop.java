@@ -2,11 +2,11 @@ package com.artem.drop;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-//import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+
+//import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 public class Drop extends Game {
 
@@ -17,8 +17,10 @@ public class Drop extends Game {
     public void create() {
 
         batch = new SpriteBatch();
+
         // use libGDX's default font
         font = new BitmapFont();
+
         viewport = new FitViewport(8, 5);
 
         //font has 15pt, but we need to scale it to our viewport by ratio of viewport height to screen height
@@ -28,6 +30,8 @@ public class Drop extends Game {
         //or with FreeTypeFontGenerator
 
         this.setScreen(new MainMenuScreen(this));
+
+        Gdx.app.log("Game", "Game started.");
     }
 
     public void render() {
