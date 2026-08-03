@@ -51,11 +51,14 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void show() {
+        assetService.getConfiguredMainMenuMusic().play();
     }
 
     @Override
     public void hide() {
         assetService.unloadMainBackground();
+      //  assetService.getConfiguredMainMenuMusic().stop();
+        assetService.unloadMainMenuMusic();
         Gdx.app.log("Game", "Main background disposed.");
     }
 

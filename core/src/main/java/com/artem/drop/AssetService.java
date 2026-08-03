@@ -22,6 +22,7 @@ public class AssetService {
         assetManager.load("speed.mp3", Sound.class);
 
         assetManager.load("music.mp3", Music.class);
+        assetManager.load("main_menu.mp3", Music.class);
 
         assetManager.finishLoading();
 
@@ -56,6 +57,17 @@ public class AssetService {
         return assetManager.get("music.mp3", Music.class);
     }
 
+    public Music getMainMenuMusic() {
+        return assetManager.get("main_menu.mp3", Music.class);
+    }
+
+    public Music getConfiguredMainMenuMusic() {
+        Music music = this.getMainMenuMusic();
+        music.setLooping(true);
+        music.setVolume(0.5f);
+        return music;
+    }
+
     public Music getConfiguredMusic() {
         Music music = this.getMusic();
         music.setLooping(true);
@@ -66,6 +78,12 @@ public class AssetService {
     public void unloadMainBackground() {
         if (assetManager.isLoaded("main_background.png")) {
             assetManager.unload("main_background.png");
+        }
+    }
+
+    public void unloadMainMenuMusic() {
+        if (assetManager.isLoaded("main_menu.mp3")) {
+            assetManager.unload("main_menu.mp3");
         }
     }
 
