@@ -11,6 +11,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.artem.drop.GameConstants.WORLD_HEIGHT;
+import static com.artem.drop.GameConstants.WORLD_WIDTH;
+
 //import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 @Slf4j
@@ -26,7 +29,7 @@ public class Drop extends Game {
         // use libGDX's default font
         BitmapFont font = new BitmapFont();
 
-        FitViewport viewport = new FitViewport(8, 5);
+        FitViewport viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT);
 
         //font has 15pt, but we need to scale it to our viewport by ratio of viewport height to screen height
         font.setUseIntegerPositions(false);
