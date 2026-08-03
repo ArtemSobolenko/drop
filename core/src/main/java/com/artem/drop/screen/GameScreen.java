@@ -1,9 +1,9 @@
 package com.artem.drop.screen;
 
 import com.artem.drop.GameContext;
+import com.artem.drop.input.DesktopPlayerInput;
 import com.artem.drop.service.AssetService;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -14,12 +14,16 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class GameScreen implements Screen {
 
     private final GameContext gameContext;
 
     private final AssetService assetService;
+
+    private final DesktopPlayerInput desktopPlayerInput;
 
     private Sprite bucketSprite;
 
@@ -42,6 +46,8 @@ public class GameScreen implements Screen {
         this.gameContext = context;
 
         this.assetService = context.assetService();
+
+        this.desktopPlayerInput = context.desktopPlayerInput();
 
         this.viewport = context.viewport();
         this.spriteBatch = context.spriteBatch();
@@ -68,44 +74,41 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        input();
-        logic();
+        input(delta);
+        logic(delta);
         draw();
     }
 
-    private void input() {
+    private void input(float delta) {
 
         float speed = 4f;
-        float delta = Gdx.graphics.getDeltaTime();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+        if (desktopPlayerInput.isLeftShiftPressed()) {
             speed *= 2;
             assetService.getSpeedSound().play(.1f);
         }
 
         //move right
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        if (desktopPlayerInput.isMoveRightPressed()) {
             bucketSprite.translateX(speed * delta);
         }
 
         //move left
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if (desktopPlayerInput.isMoveLeftPressed()) {
             bucketSprite.translateX(-speed * delta);
         }
 
-        if (Gdx.input.isTouched()) {
+        if (desktopPlayerInput.isTouched()) {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY());
             viewport.unproject(touchPos);
             bucketSprite.setCenterX(touchPos.x);
         }
     }
 
-    private void logic() {
+    private void logic(float delta) {
 
         float bucketWidth = bucketSprite.getWidth();
         float bucketHeight = bucketSprite.getHeight();
-
-        float delta = Gdx.graphics.getDeltaTime();
 
         bucketSprite.setX(MathUtils.clamp(bucketSprite.getX(), 0, viewport.getWorldWidth() - bucketWidth));
         bucketRectangle.set(bucketSprite.getX(), bucketSprite.getY(), bucketWidth, bucketHeight);
@@ -192,6 +195,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-      //  assetService.disposeAllAssets(); do not call this here
+        //  assetService.disposeAllAssets(); do not call this here
     }
 }

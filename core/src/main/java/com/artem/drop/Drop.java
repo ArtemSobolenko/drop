@@ -1,5 +1,6 @@
 package com.artem.drop;
 
+import com.artem.drop.input.DesktopPlayerInput;
 import com.artem.drop.service.AssetService;
 import com.artem.drop.service.DefaultScreenNavigator;
 import com.badlogic.gdx.Game;
@@ -7,9 +8,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import lombok.Getter;
 
 //import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
+@Getter
 public class Drop extends Game {
 
     private GameContext context;
@@ -33,15 +36,20 @@ public class Drop extends Game {
         DefaultScreenNavigator defaultScreenNavigator
             = new DefaultScreenNavigator(this);
 
-        context = new GameContext(new SpriteBatch(), font, viewport, assets, defaultScreenNavigator);
+        DesktopPlayerInput desktopPlayerInput = new DesktopPlayerInput();
+
+        context = GameContext.builder()
+            .spriteBatch(new SpriteBatch())
+            .bitmapFont(font)
+            .viewport(viewport)
+            .assetService(assets)
+            .defaultScreenNavigator(defaultScreenNavigator)
+            .desktopPlayerInput(desktopPlayerInput)
+            .build();
 
         defaultScreenNavigator.showMainMenu();
 
         Gdx.app.log("Game", "Game started.");
-    }
-
-    public GameContext getContext() {
-        return context;
     }
 
     public void render() {
@@ -49,7 +57,7 @@ public class Drop extends Game {
     }
 
     public void dispose() {
-        context.disposeAllContext();
+        context.disposeAll();
     }
 
 }
