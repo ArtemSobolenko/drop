@@ -13,28 +13,27 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GameScreen implements Screen {
 
-    final Drop game;
+    private final Drop game;
 
     private final AssetService assetService;
 
-    Sprite bucketSprite;
+    private Sprite bucketSprite;
 
-    Vector2 touchPos;
+    private Vector2 touchPos;
 
-    Array<Sprite> dropSprites;
+    private Array<Sprite> dropSprites;
 
-    Rectangle bucketRectangle;
-    Rectangle dropRectangle;
+    private Rectangle bucketRectangle;
+    private Rectangle dropRectangle;
 
-    float dropTimer;
-    int dropsGathered;
+    private float dropTimer;
+    private int dropsGathered;
 
-    public GameScreen(final Drop game) {
+    public GameScreen(final Drop game, AssetService assetService) {
 
         this.game = game;
 
-        this.assetService = new AssetService();
-        assetService.loadAllAssets();
+        this.assetService = assetService;
 
         bucketSprite = new Sprite(assetService.getBucketTexture());
         bucketSprite.setSize(1, 1);

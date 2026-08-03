@@ -13,6 +13,11 @@ public class Drop extends Game {
     public SpriteBatch batch;
     public BitmapFont font;
     public FitViewport viewport;
+    private final AssetService assetService;
+
+    public Drop(AssetService assetService) {
+        this.assetService = assetService;
+    }
 
     public void create() {
 
@@ -29,7 +34,9 @@ public class Drop extends Game {
 
         //or with FreeTypeFontGenerator
 
-        this.setScreen(new MainMenuScreen(this));
+        assetService.loadAllAssets();
+
+        this.setScreen(new MainMenuScreen(this, assetService));
 
         Gdx.app.log("Game", "Game started.");
     }

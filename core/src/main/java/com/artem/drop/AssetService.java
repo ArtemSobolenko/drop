@@ -63,6 +63,12 @@ public class AssetService {
         return music;
     }
 
+    public void unloadMainBackground() {
+        if (assetManager.isLoaded("main_background.png")) {
+            assetManager.unload("main_background.png");
+        }
+    }
+
     public void disposeAllAssets() {
         assetManager.dispose();
         Gdx.app.log("Game", "All assets disposed.");

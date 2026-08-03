@@ -7,13 +7,13 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class MainMenuScreen implements Screen {
 
-    final Drop game;
+    private final Drop game;
 
     private final AssetService assetService;
 
-    public MainMenuScreen(final Drop game) {
+    public MainMenuScreen(final Drop game, AssetService assetService) {
         this.game = game;
-        assetService = new AssetService();
+        this.assetService = assetService;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class MainMenuScreen implements Screen {
         game.batch.end();
 
         if (Gdx.input.isTouched()) {
-            game.setScreen(new GameScreen(game));
+            game.setScreen(new GameScreen(game, assetService));
             dispose();
         }
     }
@@ -63,6 +63,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
-        assetService.disposeAllAssets();
+        assetService.unloadMainBackground();
+        Gdx.app.log("Game", "Main background disposed.");
     }
 }
