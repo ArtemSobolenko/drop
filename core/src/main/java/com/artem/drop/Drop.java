@@ -15,8 +15,8 @@ public class Drop extends Game {
     public FitViewport viewport;
     private final AssetService assetService;
 
-    public Drop(AssetService assetService) {
-        this.assetService = assetService;
+    public Drop() {
+        this.assetService = new AssetService();
     }
 
     public void create() {
