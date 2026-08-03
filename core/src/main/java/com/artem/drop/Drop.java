@@ -47,9 +47,7 @@ public class Drop extends Game {
     }
 
     public void dispose() {
-        context.spriteBatch().dispose();
-        context.bitmapFont().dispose();
-        context.assetService().disposeAllAssets();
+        context.disposeAllContext();
     }
 
 }

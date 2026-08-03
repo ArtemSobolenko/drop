@@ -188,6 +188,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        assetService.disposeAllAssets();
+      //  assetService.disposeAllAssets(); do not call this here
     }
 }
