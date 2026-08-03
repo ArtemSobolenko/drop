@@ -1,5 +1,7 @@
-package com.artem.drop;
+package com.artem.drop.screen;
 
+import com.artem.drop.GameContext;
+import com.artem.drop.service.AssetService;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -81,10 +83,12 @@ public class GameScreen implements Screen {
             assetService.getSpeedSound().play(.1f);
         }
 
+        //move right
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             bucketSprite.translateX(speed * delta);
         }
 
+        //move left
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             bucketSprite.translateX(-speed * delta);
         }

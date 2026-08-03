@@ -1,4 +1,4 @@
-package com.artem.drop;
+package com.artem.drop.service;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;

@@ -1,5 +1,8 @@
-package com.artem.drop;
+package com.artem.drop.service;
 
+import com.artem.drop.Drop;
+import com.artem.drop.screen.GameScreen;
+import com.artem.drop.screen.MainMenuScreen;
 import com.badlogic.gdx.Gdx;
 
 public class DefaultScreenNavigator implements ScreenNavigator {

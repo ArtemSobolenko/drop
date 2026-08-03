@@ -1,6 +1,5 @@
 package com.artem.drop.lwjgl3;
 
-import com.artem.drop.AssetService;
 import com.artem.drop.Drop;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;

@@ -1,5 +1,7 @@
-package com.artem.drop;
+package com.artem.drop.screen;
 
+import com.artem.drop.GameContext;
+import com.artem.drop.service.AssetService;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;

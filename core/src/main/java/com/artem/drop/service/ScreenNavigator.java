@@ -1,4 +1,4 @@
-package com.artem.drop;
+package com.artem.drop.service;
 
 public interface ScreenNavigator {
 

@@ -1,5 +1,7 @@
 package com.artem.drop;
 
+import com.artem.drop.service.AssetService;
+import com.artem.drop.service.DefaultScreenNavigator;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
