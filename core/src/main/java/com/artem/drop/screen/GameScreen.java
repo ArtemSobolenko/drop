@@ -9,6 +9,7 @@ import com.artem.drop.service.AssetService;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -22,9 +23,16 @@ import static com.artem.drop.GameConstants.DEFAULT_DROPLET_CREATION_DELAY;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED_MULTIPLIER;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED_VOLUME;
+import static com.artem.drop.GameConstants.GAME_PAUSED_TEXT;
 
 @Slf4j
 public class GameScreen implements Screen {
+
+    private final GlyphLayout glyphLayout;
+
+    private final FitViewport viewport;
+
+    private final SpriteBatch spriteBatch;
 
     private final GameContext gameContext;
 
@@ -34,19 +42,16 @@ public class GameScreen implements Screen {
 
     private final DesktopPlayerInput desktopPlayerInput;
 
-    private Bucket bucket;
+    private final Bucket bucket;
 
-    private Array<Drop> drops;
+    private final Array<Drop> drops;
 
-    private final FitViewport viewport;
-
-    private final SpriteBatch spriteBatch;
-
-    private float dropTimer;
-    private int dropsGathered;
-    private int dropMissed;
+    private float dropTimer = 0f;
+    private int dropsGathered = 0;
+    private int dropMissed = 0;
 
     private boolean dragging = false;
+    private boolean previousPausedState = false;
 
     public GameScreen(final GameContext context) {
 
@@ -60,14 +65,11 @@ public class GameScreen implements Screen {
 
         this.viewport = context.viewport();
         this.spriteBatch = context.spriteBatch();
+        this.glyphLayout = new GlyphLayout();
 
         bucket = new Bucket(new Sprite(assetService.getBucketTexture()));
 
         drops = new Array<>();
-
-        dropTimer = 0f;
-        dropsGathered = 0;
-        dropMissed = 0;
     }
 
     @Override
@@ -80,9 +82,11 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         viewport.apply();
 
-        if (desktopPlayerInput.isEscapeJustPressed()) {
+        if (desktopPlayerInput.isPausePressed()) {
             gameState.togglePause();
         }
+
+        updatePauseState();
 
         if (!gameState.isPaused()) {
             input(delta);
@@ -151,9 +155,11 @@ public class GameScreen implements Screen {
         spriteBatch.begin();
 
         drawBackground();
-        bucket.render(spriteBatch);
-        drawHud();
         drawDrops();
+        drawBucket();
+
+        drawHud();
+        drawPauseOverlay();
 
         spriteBatch.end();
     }
@@ -170,13 +176,17 @@ public class GameScreen implements Screen {
 
         font.draw(spriteBatch, "Drops collected: " + dropsGathered, 0, top);
 
-        font.draw(spriteBatch, "Drops missed: " + dropMissed, 0, top - 0.3f);
+        font.draw(spriteBatch, "Drops missed: " + dropMissed, 0, top - 0.4f);
     }
 
     private void drawDrops() {
         for (Drop drop : drops) {
             drop.render(spriteBatch);
         }
+    }
+
+    private void drawBucket() {
+        bucket.render(spriteBatch);
     }
 
     private void runDropLogicLoop(float delta) {
@@ -221,6 +231,36 @@ public class GameScreen implements Screen {
     private void clampBucket() {
         bucket.setX(MathUtils.clamp(bucket.getX(), 0,
             viewport.getWorldWidth() - bucket.getWidth()));
+    }
+
+    private void updatePauseState() {
+
+        if (gameState.isPaused() != previousPausedState) {
+
+            if (gameState.isPaused()) {
+                assetService.getConfiguredMusic().pause();
+            } else {
+                assetService.getConfiguredMusic().play();
+            }
+
+            previousPausedState = gameState.isPaused();
+        }
+    }
+
+    private void drawPauseOverlay() {
+
+        if (!gameState.isPaused()) {
+            return;
+        }
+
+        BitmapFont font = gameContext.bitmapFont();
+
+        glyphLayout.setText(font, GAME_PAUSED_TEXT);
+
+        float x = (viewport.getWorldWidth() - glyphLayout.width) / 2f;
+        float y = (viewport.getWorldHeight() + glyphLayout.height) / 2f;
+
+        font.draw(spriteBatch, glyphLayout, x, y);
     }
 
     @Override

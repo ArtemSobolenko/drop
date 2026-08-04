@@ -28,4 +28,6 @@ public final class GameConstants {
     public static final String GAME_MUSIC = "music.mp3";
     public static final String MAIN_MENU_MUSIC = "main_menu.mp3";
 
+    public static final String GAME_PAUSED_TEXT = "GAME PAUSED";
+
 }
