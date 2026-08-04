@@ -1,8 +1,10 @@
 package com.artem.drop.service;
 
 import com.artem.drop.DropGame;
+import com.artem.drop.context.GameContext;
 import com.artem.drop.screen.GameScreen;
 import com.artem.drop.screen.MainMenuScreen;
+import com.artem.drop.world.GameWorld;
 
 public class DefaultScreenNavigator implements ScreenNavigator {
 
@@ -19,6 +21,7 @@ public class DefaultScreenNavigator implements ScreenNavigator {
 
     @Override
     public void showGame() {
-        game.setScreen(new GameScreen(game.getContext()));
+        GameContext context = game.getContext();
+        game.setScreen(new GameScreen(context, new GameWorld(context)));
     }
 }

@@ -6,10 +6,14 @@ import com.artem.drop.service.AssetService;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import lombok.extern.slf4j.Slf4j;
+
+import static com.artem.drop.GameConstants.MAIN_MENU_SUB_TITLE_TEXT;
+import static com.artem.drop.GameConstants.MAIN_MENU_TITLE_TEXT;
 
 @Slf4j
 public class MainMenuScreen implements Screen {
@@ -18,10 +22,12 @@ public class MainMenuScreen implements Screen {
     private final FitViewport viewport;
     private final AssetService assetService;
     private final PlayerInput playerInput;
+    private final GlyphLayout glyphLayout;
 
     public MainMenuScreen(GameContext gameContext) {
         this.gameContext = gameContext;
         this.viewport = gameContext.viewport();
+        this.glyphLayout = new GlyphLayout();
         this.assetService = gameContext.assetService();
         this.playerInput = gameContext.desktopPlayerInput();
     }
@@ -31,17 +37,13 @@ public class MainMenuScreen implements Screen {
         ScreenUtils.clear(Color.YELLOW);
 
         SpriteBatch spriteBatch = gameContext.spriteBatch();
-        BitmapFont bitmapFont = gameContext.bitmapFont();
 
         viewport.apply();
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
 
         spriteBatch.begin();
 
-        //draw text. Remember that x and y are in meters
-        spriteBatch.draw(assetService.getMainBackgroundTexture(), 0, 0, 8, 5);
-        bitmapFont.draw(spriteBatch, "Welcome to Drop Game!!! ", 1, 1.5f);
-        bitmapFont.draw(spriteBatch, "Tap anywhere to begin!", 1, 1);
+        drawMenu(spriteBatch);
 
         spriteBatch.end();
 
@@ -50,6 +52,25 @@ public class MainMenuScreen implements Screen {
             log.info("Game Screen Loaded.");
             log.info("Game started.");
         }
+    }
+
+    private void drawMenu(SpriteBatch spriteBatch) {
+
+        float worldWidth = viewport.getWorldWidth();
+        float worldHeight = viewport.getWorldHeight();
+
+        spriteBatch.draw(assetService.getMainBackgroundTexture(), 0, 0, worldWidth, worldHeight);
+
+        BitmapFont font = assetService.getMenuFont();
+
+        drawCenteredText(spriteBatch, font, MAIN_MENU_TITLE_TEXT, worldWidth, worldHeight * 0.35f);
+        drawCenteredText(spriteBatch, font, MAIN_MENU_SUB_TITLE_TEXT, worldWidth, worldHeight * 0.20f);
+    }
+
+    private void drawCenteredText(SpriteBatch spriteBatch, BitmapFont font, String text,
+                                  float worldWidth, float y) {
+        glyphLayout.setText(font, text);
+        font.draw(spriteBatch, glyphLayout, (worldWidth - glyphLayout.width) / 2f, y);
     }
 
     @Override
@@ -65,7 +86,6 @@ public class MainMenuScreen implements Screen {
     @Override
     public void hide() {
         assetService.unloadMainBackground();
-        //  assetService.getConfiguredMainMenuMusic().stop();
         assetService.unloadMainMenuMusic();
         log.info("Main background disposed.");
     }

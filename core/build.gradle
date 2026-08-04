@@ -5,14 +5,7 @@ dependencies {
   api "com.badlogicgames.gdx:gdx:$gdxVersion"
   api "org.apache.groovy:groovy-all:$groovyVersion"
 
-//  api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-//
-//  implementation project(':core')
-//
-//  implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-//  implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-//
-//  implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+  implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 
   compileOnly "org.projectlombok:lombok:1.18.46"
   annotationProcessor "org.projectlombok:lombok:1.18.46"

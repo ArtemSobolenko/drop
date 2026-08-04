@@ -23,6 +23,6 @@ public record GameContext(SpriteBatch spriteBatch,
     public void disposeAll() {
         spriteBatch.dispose();
         bitmapFont.dispose();
-        assetService.disposeAllAssets();
+        assetService.disposeAll();
     }
 }

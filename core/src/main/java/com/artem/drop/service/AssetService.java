@@ -1,12 +1,17 @@
 package com.artem.drop.service;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import lombok.Getter;
 
 import static com.artem.drop.GameConstants.BACKGROUND_TEXTURE;
 import static com.artem.drop.GameConstants.BUCKET_TEXTURE;
+import static com.artem.drop.GameConstants.DEFAULT_VOLUME;
 import static com.artem.drop.GameConstants.DROP_MISS_SOUND;
 import static com.artem.drop.GameConstants.DROP_SOUND;
 import static com.artem.drop.GameConstants.DROP_TEXTURE;
@@ -14,11 +19,23 @@ import static com.artem.drop.GameConstants.GAME_MUSIC;
 import static com.artem.drop.GameConstants.MAIN_BACKGROUND_TEXTURE;
 import static com.artem.drop.GameConstants.MAIN_MENU_MUSIC;
 import static com.artem.drop.GameConstants.SPEED_SOUND;
-import static com.artem.drop.GameConstants.DEFAULT_VOLUME;
 
 public class AssetService {
 
-    private final AssetManager assetManager = new AssetManager();
+    private final AssetManager assetManager;
+    private final FreeTypeFontGenerator fontGenerator;
+
+    @Getter
+    private BitmapFont hudFont;
+    @Getter
+    private BitmapFont menuFont;
+    @Getter
+    private BitmapFont pauseFont;
+
+    public AssetService() {
+        this.assetManager = new AssetManager();
+        this.fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Roboto-Regular.ttf"));
+    }
 
     public void loadAllAssets() {
 
@@ -36,6 +53,10 @@ public class AssetService {
         assetManager.load(MAIN_MENU_MUSIC, Music.class);
 
         assetManager.finishLoading();
+
+        this.hudFont = this.generateFont(24);
+        this.menuFont = this.generateFont(48);
+        this.pauseFont = this.generateFont(64);
     }
 
     public Texture getMainBackgroundTexture() {
@@ -100,7 +121,21 @@ public class AssetService {
         }
     }
 
-    public void disposeAllAssets() {
+    private BitmapFont generateFont(int size) {
+
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter
+            = new FreeTypeFontGenerator.FreeTypeFontParameter();
+
+        parameter.size = size;
+
+        return fontGenerator.generateFont(parameter);
+    }
+
+    public void disposeAll() {
+        hudFont.dispose();
+        menuFont.dispose();
+        pauseFont.dispose();
+        fontGenerator.dispose();
         assetManager.dispose();
     }
 }

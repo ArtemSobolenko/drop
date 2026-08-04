@@ -6,6 +6,7 @@ import com.artem.drop.entity.Bucket;
 import com.artem.drop.entity.Drop;
 import com.artem.drop.input.DesktopPlayerInput;
 import com.artem.drop.service.AssetService;
+import com.artem.drop.world.GameWorld;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -36,6 +37,8 @@ public class GameScreen implements Screen {
 
     private final GameContext gameContext;
 
+    private final GameWorld gameWorld;
+
     private final GameState gameState;
 
     private final AssetService assetService;
@@ -53,9 +56,10 @@ public class GameScreen implements Screen {
     private boolean dragging = false;
     private boolean previousPausedState = false;
 
-    public GameScreen(final GameContext context) {
+    public GameScreen(final GameContext context, final GameWorld gameWorld) {
 
         this.gameContext = context;
+        this.gameWorld = gameWorld;
 
         this.assetService = context.assetService();
 
@@ -90,6 +94,7 @@ public class GameScreen implements Screen {
 
         if (!gameState.isPaused()) {
             input(delta);
+            gameWorld.update(delta);
             logic(delta);
         }
         draw();
