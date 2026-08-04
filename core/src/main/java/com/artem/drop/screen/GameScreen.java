@@ -2,6 +2,7 @@ package com.artem.drop.screen;
 
 import com.artem.drop.GameContext;
 import com.artem.drop.entity.Bucket;
+import com.artem.drop.entity.Drop;
 import com.artem.drop.input.DesktopPlayerInput;
 import com.artem.drop.service.AssetService;
 import com.badlogic.gdx.Screen;
@@ -9,7 +10,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -17,7 +17,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.artem.drop.GameConstants.DEFAULT_DROPLET_CREATION_DELAY;
-import static com.artem.drop.GameConstants.DEFAULT_DROPLET_FALLING_SPEED;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED_MULTIPLIER;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED_VOLUME;
@@ -33,13 +32,11 @@ public class GameScreen implements Screen {
 
     private Bucket bucket;
 
-    private Array<Sprite> dropSprites;
+    private Array<Drop> drops;
 
     private final FitViewport viewport;
 
     private final SpriteBatch spriteBatch;
-
-    private Rectangle dropRectangle;
 
     private float dropTimer;
     private int dropsGathered;
@@ -59,9 +56,7 @@ public class GameScreen implements Screen {
 
         bucket = new Bucket(new Sprite(assetService.getBucketTexture()));
 
-        dropSprites = new Array<>();
-
-        dropRectangle = new Rectangle();
+        drops = new Array<>();
 
         dropTimer = 0f;
         dropsGathered = 0;
@@ -125,7 +120,7 @@ public class GameScreen implements Screen {
 
         clampBucket();
 
-        runDropLogicLoopLegacy(delta);
+        runDropLogicLoop(delta);
 
 //        log.info("dropSprites loop finished");
 
@@ -159,29 +154,27 @@ public class GameScreen implements Screen {
     }
 
     private void drawDrops() {
-        for (Sprite dropSprite : dropSprites) {
-//            log.info("From drawDrops: dropSprites size = {}", dropSprites.size);
-            dropSprite.draw(spriteBatch);
+        for (Drop drop : drops) {
+            drop.render(spriteBatch);
         }
     }
 
-    private void runDropLogicLoopLegacy(float delta) {
-        for (int i = dropSprites.size - 1; i >= 0; i--) {
+    private void runDropLogicLoop(float delta) {
+        for (int i = drops.size - 1; i >= 0; i--) {
 //            log.info("From logic: dropSprites size = {}", dropSprites.size);
-            Sprite drop = dropSprites.get(i);
 
-            drop.translateY(DEFAULT_DROPLET_FALLING_SPEED * delta);
-            dropRectangle.set(drop.getBoundingRectangle());
+            Drop drop = drops.get(i);
+            drop.move(delta);
 
             if (drop.getY() < -drop.getHeight()) {
-                dropSprites.removeIndex(i);
+                drops.removeIndex(i);
                 continue;
             }
 
-            if (bucket.getBounds().overlaps(dropRectangle)) {
+            if (bucket.getBounds().overlaps(drop.getBounds())) {
                 dropsGathered++;
                 assetService.getDropSound().play();
-                dropSprites.removeIndex(i);
+                drops.removeIndex(i);
             }
         }
     }
@@ -196,16 +189,11 @@ public class GameScreen implements Screen {
 
     private void createDroplet() {
 
-        float dropWidth = 1;
-        float dropHeight = 1;
+        Drop drop = new Drop(new Sprite(assetService.getDropTexture()));
+        drop.setX(MathUtils.random(0F, viewport.getWorldWidth() - drop.getWidth()));
+        drop.setY(viewport.getWorldHeight());
 
-        Sprite dropSprite = new Sprite(assetService.getDropTexture());
-        dropSprite.setSize(dropWidth, dropHeight);
-
-        dropSprite.setX(MathUtils.random(0F, viewport.getWorldWidth() - dropWidth));
-        dropSprite.setY(viewport.getWorldHeight());
-
-        dropSprites.add(dropSprite);
+        drops.add(drop);
     }
 
     private void clampBucket() {
