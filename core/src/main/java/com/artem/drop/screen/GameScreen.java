@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.artem.drop.GameConstants.DEFAULT_DROPLET_CREATION_DELAY;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED_MULTIPLIER;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED_VOLUME;
@@ -121,31 +122,13 @@ public class GameScreen implements Screen {
 
     private void logic(float delta) {
 
-        //clamp bucket
-        bucket.setX(MathUtils.clamp(bucket.getX(), 0, viewport.getWorldWidth() - bucket.getWidth()));
+        clampBucket();
 
-        for (int i = dropSprites.size - 1; i >= 0; i--) {
-            Sprite dropSprite = dropSprites.get(i);
-            float dropWidth = dropSprite.getWidth();
-            float dropHeight = dropSprite.getHeight();
+        runDropLogicLoop(delta);
 
-            dropSprite.translateY(-2f * delta);
-            dropRectangle.set(dropSprite.getX(), dropSprite.getY(), dropWidth, dropHeight);
+//        log.info("dropSprites loop finished");
 
-            if (dropSprite.getY() < -dropHeight) {
-                dropSprites.removeIndex(i);
-            } else if (bucket.getBounds().overlaps(dropRectangle)) {
-                dropsGathered++;
-                dropSprites.removeIndex(i);
-                assetService.getDropSound().play();
-            }
-        }
-
-        dropTimer += delta;
-        if (dropTimer > 1f) {
-            dropTimer = 0;
-            createDroplet();
-        }
+        createDropletWithDelay(delta);
     }
 
     private void draw() {
@@ -156,21 +139,80 @@ public class GameScreen implements Screen {
 
         spriteBatch.begin();
 
-        float worldWidth = viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
-
-        spriteBatch.draw(assetService.getBackgroundTexture(), 0, 0, worldWidth, worldHeight);
-
+        drawBackground();
         bucket.render(spriteBatch);
-
-        gameContext.bitmapFont()
-            .draw(spriteBatch, "Drops collected: " + dropsGathered, 0, worldHeight);
-
-        for (Sprite dropSprite : dropSprites) {
-            dropSprite.draw(spriteBatch);
-        }
+        drawHug();
+        drawDrops();
 
         spriteBatch.end();
+    }
+
+    private void drawBackground() {
+        spriteBatch.draw(assetService
+            .getBackgroundTexture(), 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+    }
+
+    private void drawHug() {
+        gameContext.bitmapFont()
+            .draw(spriteBatch, "Drops collected: " + dropsGathered, 0, viewport.getWorldHeight());
+    }
+
+    private void drawDrops() {
+        for (Sprite dropSprite : dropSprites) {
+//            log.info("From drawDrops: dropSprites size = {}", dropSprites.size);
+            dropSprite.draw(spriteBatch);
+        }
+    }
+
+    private void runDropLogicLoop(float delta) {
+        if (!dropSprites.isEmpty()) {
+//            log.info("From logic: dropSprites size = {}", dropSprites.size);
+            for (Sprite dropSprite : dropSprites) {
+
+                dropSprite.translateY(-2f * delta);
+                dropRectangle.set(dropSprite.getBoundingRectangle());
+
+                if (dropSprite.getY() < -dropSprite.getHeight()) {
+                    dropSprites.removeValue(dropSprite, true);
+                }
+
+                if (bucket.getBounds().overlaps(dropRectangle)) {
+                    dropsGathered++;
+                    dropSprites.removeValue(dropSprite, true);
+                    assetService.getDropSound().play();
+                }
+            }
+        }
+    }
+
+    private void runDropLogicLoopLegacy(float delta) {
+        for (int i = dropSprites.size - 1; i >= 0; i--) {
+            log.info("From logic: dropSprites size = {}", dropSprites.size);
+            Sprite dropSprite = dropSprites.get(i);
+            float dropWidth = dropSprite.getWidth();
+            float dropHeight = dropSprite.getHeight();
+
+            dropSprite.translateY(-2f * delta);
+            dropRectangle.set(dropSprite.getX(), dropSprite.getY(), dropWidth, dropHeight);
+
+            if (dropSprite.getY() < -dropHeight) {
+                dropSprites.removeIndex(i);
+            }
+
+            if (bucket.getBounds().overlaps(dropRectangle)) {
+                dropsGathered++;
+                dropSprites.removeIndex(i);
+                assetService.getDropSound().play();
+            }
+        }
+    }
+
+    private void createDropletWithDelay(float delta) {
+        dropTimer += delta;
+        if (dropTimer > DEFAULT_DROPLET_CREATION_DELAY) {
+            dropTimer = 0;
+            createDroplet();
+        }
     }
 
     private void createDroplet() {
@@ -179,12 +221,17 @@ public class GameScreen implements Screen {
         float dropHeight = 1;
 
         Sprite dropSprite = new Sprite(assetService.getDropTexture());
-
         dropSprite.setSize(dropWidth, dropHeight);
+
         dropSprite.setX(MathUtils.random(0F, viewport.getWorldWidth() - dropWidth));
         dropSprite.setY(viewport.getWorldHeight());
 
         dropSprites.add(dropSprite);
+    }
+
+    private void clampBucket() {
+        bucket.setX(MathUtils.clamp(bucket.getX(), 0,
+            viewport.getWorldWidth() - bucket.getWidth()));
     }
 
     @Override
