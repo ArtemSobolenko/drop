@@ -23,6 +23,7 @@ public final class GameConstants {
 
     public static final String DROP_SOUND = "drop.mp3";
     public static final String SPEED_SOUND = "speed.mp3";
+    public static final String DROP_MISS_SOUND = "drop_miss.mp3";
 
     public static final String GAME_MUSIC = "music.mp3";
     public static final String MAIN_MENU_MUSIC = "main_menu.mp3";

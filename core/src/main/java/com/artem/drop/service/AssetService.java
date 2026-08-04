@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 import static com.artem.drop.GameConstants.BACKGROUND_TEXTURE;
 import static com.artem.drop.GameConstants.BUCKET_TEXTURE;
+import static com.artem.drop.GameConstants.DROP_MISS_SOUND;
 import static com.artem.drop.GameConstants.DROP_SOUND;
 import static com.artem.drop.GameConstants.DROP_TEXTURE;
 import static com.artem.drop.GameConstants.GAME_MUSIC;
@@ -29,6 +30,7 @@ public class AssetService {
 
         assetManager.load(DROP_SOUND, Sound.class);
         assetManager.load(SPEED_SOUND, Sound.class);
+        assetManager.load(DROP_MISS_SOUND, Sound.class);
 
         assetManager.load(GAME_MUSIC, Music.class);
         assetManager.load(MAIN_MENU_MUSIC, Music.class);
@@ -54,6 +56,10 @@ public class AssetService {
 
     public Sound getDropSound() {
         return assetManager.get(DROP_SOUND, Sound.class);
+    }
+
+    public Sound getDropMissSound() {
+        return assetManager.get(DROP_MISS_SOUND, Sound.class);
     }
 
     public Sound getSpeedSound() {

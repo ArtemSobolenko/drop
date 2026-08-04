@@ -7,6 +7,7 @@ import com.artem.drop.input.DesktopPlayerInput;
 import com.artem.drop.service.AssetService;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -40,6 +41,7 @@ public class GameScreen implements Screen {
 
     private float dropTimer;
     private int dropsGathered;
+    private int dropMissed;
 
     private boolean dragging = false;
 
@@ -60,6 +62,7 @@ public class GameScreen implements Screen {
 
         dropTimer = 0f;
         dropsGathered = 0;
+        dropMissed = 0;
     }
 
     @Override
@@ -137,7 +140,7 @@ public class GameScreen implements Screen {
 
         drawBackground();
         bucket.render(spriteBatch);
-        drawHug();
+        drawHud();
         drawDrops();
 
         spriteBatch.end();
@@ -148,9 +151,14 @@ public class GameScreen implements Screen {
             .getBackgroundTexture(), 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
     }
 
-    private void drawHug() {
-        gameContext.bitmapFont()
-            .draw(spriteBatch, "Drops collected: " + dropsGathered, 0, viewport.getWorldHeight());
+    private void drawHud() {
+        BitmapFont font = gameContext.bitmapFont();
+
+        float top = viewport.getWorldHeight();
+
+        font.draw(spriteBatch, "Drops collected: " + dropsGathered, 0, top);
+
+        font.draw(spriteBatch, "Drops missed: " + dropMissed, 0, top - 0.3f);
     }
 
     private void drawDrops() {
@@ -167,6 +175,8 @@ public class GameScreen implements Screen {
             drop.move(delta);
 
             if (drop.getY() < -drop.getHeight()) {
+                dropMissed++;
+                assetService.getDropMissSound().play();
                 drops.removeIndex(i);
                 continue;
             }
