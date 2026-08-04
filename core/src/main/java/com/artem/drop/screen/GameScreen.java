@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.artem.drop.GameConstants.DEFAULT_DROPLET_CREATION_DELAY;
+import static com.artem.drop.GameConstants.DEFAULT_DROPLET_FALLING_SPEED;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED_MULTIPLIER;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED_VOLUME;
@@ -124,7 +125,7 @@ public class GameScreen implements Screen {
 
         clampBucket();
 
-        runDropLogicLoop(delta);
+        runDropLogicLoopLegacy(delta);
 
 //        log.info("dropSprites loop finished");
 
@@ -164,45 +165,23 @@ public class GameScreen implements Screen {
         }
     }
 
-    private void runDropLogicLoop(float delta) {
-        if (!dropSprites.isEmpty()) {
-//            log.info("From logic: dropSprites size = {}", dropSprites.size);
-            for (Sprite dropSprite : dropSprites) {
-
-                dropSprite.translateY(-2f * delta);
-                dropRectangle.set(dropSprite.getBoundingRectangle());
-
-                if (dropSprite.getY() < -dropSprite.getHeight()) {
-                    dropSprites.removeValue(dropSprite, true);
-                }
-
-                if (bucket.getBounds().overlaps(dropRectangle)) {
-                    dropsGathered++;
-                    dropSprites.removeValue(dropSprite, true);
-                    assetService.getDropSound().play();
-                }
-            }
-        }
-    }
-
     private void runDropLogicLoopLegacy(float delta) {
         for (int i = dropSprites.size - 1; i >= 0; i--) {
-            log.info("From logic: dropSprites size = {}", dropSprites.size);
-            Sprite dropSprite = dropSprites.get(i);
-            float dropWidth = dropSprite.getWidth();
-            float dropHeight = dropSprite.getHeight();
+//            log.info("From logic: dropSprites size = {}", dropSprites.size);
+            Sprite drop = dropSprites.get(i);
 
-            dropSprite.translateY(-2f * delta);
-            dropRectangle.set(dropSprite.getX(), dropSprite.getY(), dropWidth, dropHeight);
+            drop.translateY(DEFAULT_DROPLET_FALLING_SPEED * delta);
+            dropRectangle.set(drop.getBoundingRectangle());
 
-            if (dropSprite.getY() < -dropHeight) {
+            if (drop.getY() < -drop.getHeight()) {
                 dropSprites.removeIndex(i);
+                continue;
             }
 
             if (bucket.getBounds().overlaps(dropRectangle)) {
                 dropsGathered++;
-                dropSprites.removeIndex(i);
                 assetService.getDropSound().play();
+                dropSprites.removeIndex(i);
             }
         }
     }

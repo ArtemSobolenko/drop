@@ -13,6 +13,7 @@ public final class GameConstants {
     public static final float DEFAULT_SPEED = 4f;
     public static final int DEFAULT_SPEED_MULTIPLIER = 2;
     public static final float DEFAULT_DROPLET_CREATION_DELAY = 1f;
+    public static final float DEFAULT_DROPLET_FALLING_SPEED = -2f;
 
     public static final String BACKGROUND_TEXTURE = "background.png";
     public static final String MAIN_BACKGROUND_TEXTURE = "main_background.png";
