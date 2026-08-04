@@ -1,8 +1,9 @@
-package com.artem.drop;
+package com.artem.drop.context;
 
 import com.artem.drop.input.DesktopPlayerInput;
 import com.artem.drop.service.AssetService;
 import com.artem.drop.service.DefaultScreenNavigator;
+import com.artem.drop.state.GameState;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -16,7 +17,8 @@ public record GameContext(SpriteBatch spriteBatch,
                           FitViewport viewport,
                           AssetService assetService,
                           DefaultScreenNavigator defaultScreenNavigator,
-                          DesktopPlayerInput desktopPlayerInput) {
+                          DesktopPlayerInput desktopPlayerInput,
+                          GameState gameState) {
 
     public void disposeAll() {
         spriteBatch.dispose();

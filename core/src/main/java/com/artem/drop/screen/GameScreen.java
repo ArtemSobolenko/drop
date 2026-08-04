@@ -1,6 +1,7 @@
 package com.artem.drop.screen;
 
-import com.artem.drop.GameContext;
+import com.artem.drop.context.GameContext;
+import com.artem.drop.state.GameState;
 import com.artem.drop.entity.Bucket;
 import com.artem.drop.entity.Drop;
 import com.artem.drop.input.DesktopPlayerInput;
@@ -26,6 +27,8 @@ import static com.artem.drop.GameConstants.DEFAULT_SPEED_VOLUME;
 public class GameScreen implements Screen {
 
     private final GameContext gameContext;
+
+    private final GameState gameState;
 
     private final AssetService assetService;
 
@@ -53,6 +56,8 @@ public class GameScreen implements Screen {
 
         this.desktopPlayerInput = context.desktopPlayerInput();
 
+        this.gameState = context.gameState();
+
         this.viewport = context.viewport();
         this.spriteBatch = context.spriteBatch();
 
@@ -74,8 +79,15 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         viewport.apply();
-        input(delta);
-        logic(delta);
+
+        if (desktopPlayerInput.isEscapeJustPressed()) {
+            gameState.togglePause();
+        }
+
+        if (!gameState.isPaused()) {
+            input(delta);
+            logic(delta);
+        }
         draw();
     }
 

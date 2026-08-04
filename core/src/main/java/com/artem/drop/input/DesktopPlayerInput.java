@@ -45,4 +45,9 @@ public class DesktopPlayerInput implements PlayerInput {
         return touchPos;
     }
 
+    @Override
+    public boolean isEscapeJustPressed() {
+        return Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE);
+    }
+
 }

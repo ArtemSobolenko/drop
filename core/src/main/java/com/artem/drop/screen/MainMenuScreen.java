@@ -1,6 +1,6 @@
 package com.artem.drop.screen;
 
-import com.artem.drop.GameContext;
+import com.artem.drop.context.GameContext;
 import com.artem.drop.input.PlayerInput;
 import com.artem.drop.service.AssetService;
 import com.badlogic.gdx.Screen;

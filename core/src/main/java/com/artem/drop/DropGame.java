@@ -1,8 +1,10 @@
 package com.artem.drop;
 
+import com.artem.drop.context.GameContext;
 import com.artem.drop.input.DesktopPlayerInput;
 import com.artem.drop.service.AssetService;
 import com.artem.drop.service.DefaultScreenNavigator;
+import com.artem.drop.state.GameState;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -53,6 +55,7 @@ public class DropGame extends Game {
             .assetService(assets)
             .defaultScreenNavigator(defaultScreenNavigator)
             .desktopPlayerInput(desktopPlayerInput)
+            .gameState(new GameState())
             .build();
 
         defaultScreenNavigator.showMainMenu();
