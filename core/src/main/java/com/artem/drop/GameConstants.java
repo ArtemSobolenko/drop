@@ -15,18 +15,22 @@ public final class GameConstants {
     public static final float DEFAULT_DROPLET_CREATION_DELAY = 1f;
     public static final float DEFAULT_DROPLET_FALLING_SPEED = -2f;
 
-    public static final String BACKGROUND_TEXTURE = "background.png";
-    public static final String MAIN_BACKGROUND_TEXTURE = "main_background.png";
+    public static final String BACKGROUND_TEXTURE = "images/background.png";
+    public static final String MAIN_BACKGROUND_TEXTURE = "images/main_background.png";
 
-    public static final String DROP_TEXTURE = "drop.png";
-    public static final String BUCKET_TEXTURE = "bucket.png";
+    public static final String DROP_TEXTURE = "images/drop.png";
+    public static final String BUCKET_TEXTURE = "images/bucket.png";
 
-    public static final String DROP_SOUND = "drop.mp3";
-    public static final String SPEED_SOUND = "speed.mp3";
-    public static final String DROP_MISS_SOUND = "drop_miss.mp3";
+    //todo: need cover with tests
+    public static final String DROP_SOUND = "sounds/drop.mp3";
+    public static final String SPEED_SOUND = "sounds/speed.mp3";
+    public static final String DROP_MISS_SOUND = "sounds/drop_miss.mp3";
 
-    public static final String GAME_MUSIC = "music.mp3";
-    public static final String MAIN_MENU_MUSIC = "main_menu.mp3";
+    //todo: need cover with tests
+    public static final String GAME_MUSIC = "music/music.mp3";
+    public static final String MAIN_MENU_MUSIC = "music/main_menu.mp3";
+
+    public static final String ROBOTO_REGULAR_FRONT = "fonts/Roboto-Regular.ttf";
 
     public static final String GAME_PAUSED_TEXT = "GAME PAUSED";
     public static final String MAIN_MENU_TITLE_TEXT = "Welcome to Drop Game!!!";

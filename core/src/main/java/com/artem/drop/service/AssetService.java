@@ -18,6 +18,7 @@ import static com.artem.drop.GameConstants.DROP_TEXTURE;
 import static com.artem.drop.GameConstants.GAME_MUSIC;
 import static com.artem.drop.GameConstants.MAIN_BACKGROUND_TEXTURE;
 import static com.artem.drop.GameConstants.MAIN_MENU_MUSIC;
+import static com.artem.drop.GameConstants.ROBOTO_REGULAR_FRONT;
 import static com.artem.drop.GameConstants.SPEED_SOUND;
 import static com.artem.drop.GameConstants.WORLD_HEIGHT;
 
@@ -39,7 +40,7 @@ public class AssetService {
 
     public AssetService() {
         this.assetManager = new AssetManager();
-        this.fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Roboto-Regular.ttf"));
+        this.fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal(ROBOTO_REGULAR_FRONT));
     }
 
     public void loadAllAssets() {
