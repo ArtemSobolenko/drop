@@ -21,12 +21,10 @@ public final class GameConstants {
     public static final String DROP_TEXTURE = "images/drop.png";
     public static final String BUCKET_TEXTURE = "images/bucket.png";
 
-    //todo: need cover with tests
     public static final String DROP_SOUND = "sounds/drop.mp3";
     public static final String SPEED_SOUND = "sounds/speed.mp3";
     public static final String DROP_MISS_SOUND = "sounds/drop_miss.mp3";
 
-    //todo: need cover with tests
     public static final String GAME_MUSIC = "music/music.mp3";
     public static final String MAIN_MENU_MUSIC = "music/main_menu.mp3";
 
