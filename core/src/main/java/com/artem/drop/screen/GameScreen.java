@@ -1,26 +1,21 @@
 package com.artem.drop.screen;
 
 import com.artem.drop.context.GameContext;
-import com.artem.drop.state.GameState;
-import com.artem.drop.entity.Bucket;
 import com.artem.drop.entity.Drop;
-import com.artem.drop.input.DesktopPlayerInput;
+import com.artem.drop.input.PlayerInput;
 import com.artem.drop.service.AssetService;
+import com.artem.drop.state.GameState;
 import com.artem.drop.world.GameWorld;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.artem.drop.GameConstants.DEFAULT_DROPLET_CREATION_DELAY;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED_MULTIPLIER;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED_VOLUME;
@@ -35,45 +30,27 @@ public class GameScreen implements Screen {
 
     private final SpriteBatch spriteBatch;
 
-    private final GameContext gameContext;
-
     private final GameWorld gameWorld;
 
     private final GameState gameState;
 
     private final AssetService assetService;
 
-    private final DesktopPlayerInput desktopPlayerInput;
-
-    private final Bucket bucket;
-
-    private final Array<Drop> drops;
-
-    private float dropTimer = 0f;
-    private int dropsGathered = 0;
-    private int dropMissed = 0;
+    private final PlayerInput playerInput;
 
     private boolean dragging = false;
     private boolean previousPausedState = false;
 
     public GameScreen(final GameContext context, final GameWorld gameWorld) {
 
-        this.gameContext = context;
         this.gameWorld = gameWorld;
 
         this.assetService = context.assetService();
-
-        this.desktopPlayerInput = context.desktopPlayerInput();
-
+        this.playerInput = context.playerInput();
         this.gameState = context.gameState();
-
         this.viewport = context.viewport();
         this.spriteBatch = context.spriteBatch();
         this.glyphLayout = new GlyphLayout();
-
-        bucket = new Bucket(new Sprite(assetService.getBucketTexture()));
-
-        drops = new Array<>();
     }
 
     @Override
@@ -86,69 +63,58 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         viewport.apply();
 
-        if (desktopPlayerInput.isPausePressed()) {
+        if (playerInput.isPausePressed()) {
             gameState.togglePause();
         }
 
         updatePauseState();
 
         if (!gameState.isPaused()) {
-            input(delta);
+            handleInput(delta);
             gameWorld.update(delta);
-            logic(delta);
         }
         draw();
     }
 
-    private void input(float delta) {
+    private void handleInput(float delta) {
 
         float speed = DEFAULT_SPEED;
-        float dx;
 
-        if (desktopPlayerInput.isLeftShiftPressed()) {
+        if (playerInput.isLeftShiftPressed()) {
             speed *= DEFAULT_SPEED_MULTIPLIER;
             assetService.getSpeedSound().play(DEFAULT_SPEED_VOLUME);
         }
 
         //move right
-        if (desktopPlayerInput.isMoveRightPressed()) {
-            dx = speed * delta;
-            bucket.move(dx);
+        if (playerInput.isMoveRightPressed()) {
+            gameWorld.moveBucket(speed * delta);
         }
 
         //move left
-        if (desktopPlayerInput.isMoveLeftPressed()) {
-            dx = speed * delta;
-            bucket.move(-dx);
+        if (playerInput.isMoveLeftPressed()) {
+            gameWorld.moveBucket(-speed * delta);
         }
 
-        if (desktopPlayerInput.isTouched()) {
-            Vector2 touchPos = desktopPlayerInput.getTouchPos();
-            viewport.unproject(touchPos);
-
-            if (desktopPlayerInput.isJustTouched()) {
-                dragging = bucket.getBounds().contains(touchPos);
-            }
-
-            if (!desktopPlayerInput.isTouched()) {
-                dragging = false;
-            }
-
-            if (dragging) {
-                bucket.setCenterX(touchPos.x);
-            }
-        }
+        handleTouchInput();
     }
 
-    private void logic(float delta) {
+    private void handleTouchInput() {
 
-        clampBucket();
+        if (!playerInput.isTouched()) {
+            dragging = false;
+            return;
+        }
 
-        runDropLogicLoop(delta);
+        Vector2 touchPos = playerInput.getTouchPos();
+        viewport.unproject(touchPos);
 
-//        log.info("dropSprites loop finished");
+        if (playerInput.isJustTouched()) {
+            dragging = gameWorld.getBucket().getBounds().contains(touchPos);
+        }
 
-        createDropletWithDelay(delta);
+        if (dragging) {
+            gameWorld.setBucketCenterX(touchPos.x);
+        }
     }
 
     private void draw() {
@@ -175,67 +141,23 @@ public class GameScreen implements Screen {
     }
 
     private void drawHud() {
-        BitmapFont font = gameContext.bitmapFont();
+        BitmapFont font = assetService.getHudFont();
 
         float top = viewport.getWorldHeight();
 
-        font.draw(spriteBatch, "Drops collected: " + dropsGathered, 0, top);
+        font.draw(spriteBatch, "Drops collected: " + gameWorld.getDropsGathered(), 0, top);
 
-        font.draw(spriteBatch, "Drops missed: " + dropMissed, 0, top - 0.4f);
+        font.draw(spriteBatch, "Drops missed: " + gameWorld.getDropsMissed(), 0, top - 0.4f);
     }
 
     private void drawDrops() {
-        for (Drop drop : drops) {
+        for (Drop drop : gameWorld.getDrops()) {
             drop.render(spriteBatch);
         }
     }
 
     private void drawBucket() {
-        bucket.render(spriteBatch);
-    }
-
-    private void runDropLogicLoop(float delta) {
-        for (int i = drops.size - 1; i >= 0; i--) {
-//            log.info("From logic: dropSprites size = {}", dropSprites.size);
-
-            Drop drop = drops.get(i);
-            drop.move(delta);
-
-            if (drop.getY() < -drop.getHeight()) {
-                dropMissed++;
-                assetService.getDropMissSound().play();
-                drops.removeIndex(i);
-                continue;
-            }
-
-            if (bucket.getBounds().overlaps(drop.getBounds())) {
-                dropsGathered++;
-                assetService.getDropSound().play();
-                drops.removeIndex(i);
-            }
-        }
-    }
-
-    private void createDropletWithDelay(float delta) {
-        dropTimer += delta;
-        if (dropTimer > DEFAULT_DROPLET_CREATION_DELAY) {
-            dropTimer = 0;
-            createDroplet();
-        }
-    }
-
-    private void createDroplet() {
-
-        Drop drop = new Drop(new Sprite(assetService.getDropTexture()));
-        drop.setX(MathUtils.random(0F, viewport.getWorldWidth() - drop.getWidth()));
-        drop.setY(viewport.getWorldHeight());
-
-        drops.add(drop);
-    }
-
-    private void clampBucket() {
-        bucket.setX(MathUtils.clamp(bucket.getX(), 0,
-            viewport.getWorldWidth() - bucket.getWidth()));
+        gameWorld.getBucket().render(spriteBatch);
     }
 
     private void updatePauseState() {
@@ -258,7 +180,7 @@ public class GameScreen implements Screen {
             return;
         }
 
-        BitmapFont font = gameContext.bitmapFont();
+        BitmapFont font = assetService.getPauseFont();
 
         glyphLayout.setText(font, GAME_PAUSED_TEXT);
 

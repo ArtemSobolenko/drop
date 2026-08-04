@@ -29,7 +29,7 @@ public class MainMenuScreen implements Screen {
         this.viewport = gameContext.viewport();
         this.glyphLayout = new GlyphLayout();
         this.assetService = gameContext.assetService();
-        this.playerInput = gameContext.desktopPlayerInput();
+        this.playerInput = gameContext.playerInput();
     }
 
     @Override

@@ -22,6 +22,7 @@ public class DefaultScreenNavigator implements ScreenNavigator {
     @Override
     public void showGame() {
         GameContext context = game.getContext();
-        game.setScreen(new GameScreen(context, new GameWorld(context)));
+        GameWorld gameWorld = new GameWorld(context.assetService());
+        game.setScreen(new GameScreen(context, gameWorld));
     }
 }

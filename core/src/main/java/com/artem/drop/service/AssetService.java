@@ -19,8 +19,13 @@ import static com.artem.drop.GameConstants.GAME_MUSIC;
 import static com.artem.drop.GameConstants.MAIN_BACKGROUND_TEXTURE;
 import static com.artem.drop.GameConstants.MAIN_MENU_MUSIC;
 import static com.artem.drop.GameConstants.SPEED_SOUND;
+import static com.artem.drop.GameConstants.WORLD_HEIGHT;
 
 public class AssetService {
+
+    private static final int HUD_FONT_SIZE = 24;
+    private static final int MENU_FONT_SIZE = 48;
+    private static final int PAUSE_FONT_SIZE = 64;
 
     private final AssetManager assetManager;
     private final FreeTypeFontGenerator fontGenerator;
@@ -54,9 +59,14 @@ public class AssetService {
 
         assetManager.finishLoading();
 
-        this.hudFont = this.generateFont(24);
-        this.menuFont = this.generateFont(48);
-        this.pauseFont = this.generateFont(64);
+        // Fonts are generated at a fixed pixel size, so without scaling them down to
+        // world units they render dozens of world-units tall on our ~5-unit-tall
+        // viewport (that's what was making menu text on MainMenuScreen huge/off-screen).
+        float fontScale = WORLD_HEIGHT / Gdx.graphics.getHeight();
+
+        this.hudFont = this.generateFont(HUD_FONT_SIZE, fontScale);
+        this.menuFont = this.generateFont(MENU_FONT_SIZE, fontScale);
+        this.pauseFont = this.generateFont(PAUSE_FONT_SIZE, fontScale);
     }
 
     public Texture getMainBackgroundTexture() {
@@ -121,14 +131,18 @@ public class AssetService {
         }
     }
 
-    private BitmapFont generateFont(int size) {
+    private BitmapFont generateFont(int size, float scale) {
 
         FreeTypeFontGenerator.FreeTypeFontParameter parameter
             = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
         parameter.size = size;
 
-        return fontGenerator.generateFont(parameter);
+        BitmapFont font = fontGenerator.generateFont(parameter);
+        font.setUseIntegerPositions(false);
+        font.getData().setScale(scale);
+
+        return font;
     }
 
     public void disposeAll() {

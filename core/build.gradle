@@ -1,5 +1,11 @@
+apply plugin: 'jacoco'
+
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 eclipse.project.name = appName + '-core'
+
+jacoco {
+  toolVersion = '0.8.15'
+}
 
 dependencies {
   api "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -16,8 +22,48 @@ dependencies {
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
   }
+
+  // Native libraries needed only so that tests can exercise real libGDX texture
+  // decoding (gdx-platform) and real font parsing (gdx-freetype-platform), the
+  // same natives lwjgl3 already ships with at runtime.
+  testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+  testImplementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+  testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+  testImplementation 'org.mockito:mockito-core:5.23.0'
 }
 
 jar {
   duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
+
+test {
+  useJUnitPlatform()
+  // Lets tests resolve real asset files (fonts, textures, sounds) by absolute
+  // path regardless of the working directory Gradle runs the test task from.
+  systemProperty 'assetsDir', rootProject.file('assets').absolutePath
+  finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+  dependsOn test
+  reports {
+    xml.required = true
+    html.required = true
+    csv.required = true
+  }
+}
+
+jacocoTestCoverageVerification {
+  dependsOn jacocoTestReport
+  violationRules {
+    rule {
+      limit {
+        minimum = 0.90
+      }
+    }
+  }
+}
+
+check.dependsOn jacocoTestCoverageVerification
