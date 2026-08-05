@@ -32,6 +32,6 @@ public final class GameConstants {
 
     public static final String GAME_PAUSED_TEXT = "GAME PAUSED";
     public static final String MAIN_MENU_TITLE_TEXT = "Welcome to Drop Game!!!";
-    public static final String MAIN_MENU_SUB_TITLE_TEXT = "Tap anywhere to begin!";
+    public static final String MAIN_MENU_SUB_TITLE_TEXT = "Tap anywhere or press SPACE to begin!";
 
 }

@@ -73,7 +73,7 @@ class GameScreenTest {
             .assetService(assetService)
             .defaultScreenNavigator(mock(DefaultScreenNavigator.class))
             .playerInput(playerInput)
-            .gameInputProcessor(gameInputProcessor)
+            .inputProcessor(gameInputProcessor)
             .gameState(gameState)
             .build();
 

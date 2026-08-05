@@ -5,7 +5,6 @@ import com.artem.drop.input.PlayerInput;
 import com.artem.drop.service.AssetService;
 import com.artem.drop.service.DefaultScreenNavigator;
 import com.artem.drop.state.GameState;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import lombok.Builder;
@@ -18,7 +17,7 @@ public record GameContext(SpriteBatch spriteBatch,
                           AssetService assetService,
                           DefaultScreenNavigator defaultScreenNavigator,
                           PlayerInput playerInput,
-                          GameInputProcessor gameInputProcessor,
+                          GameInputProcessor inputProcessor,
                           GameState gameState) {
 
     public void disposeAll() {

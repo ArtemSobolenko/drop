@@ -1,6 +1,7 @@
 package com.artem.drop.screen;
 
 import com.artem.drop.context.GameContext;
+import com.artem.drop.input.GameInputProcessor;
 import com.artem.drop.input.PlayerInput;
 import com.artem.drop.service.AssetService;
 import com.badlogic.gdx.Screen;
@@ -22,6 +23,7 @@ public class MainMenuScreen implements Screen {
     private final FitViewport viewport;
     private final AssetService assetService;
     private final PlayerInput playerInput;
+    private final GameInputProcessor inputProcessor;
     private final GlyphLayout glyphLayout;
 
     public MainMenuScreen(GameContext gameContext) {
@@ -30,11 +32,12 @@ public class MainMenuScreen implements Screen {
         this.glyphLayout = new GlyphLayout();
         this.assetService = gameContext.assetService();
         this.playerInput = gameContext.playerInput();
+        this.inputProcessor = gameContext.inputProcessor();
     }
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(Color.YELLOW);
+        ScreenUtils.clear(Color.BLUE);
 
         SpriteBatch spriteBatch = gameContext.spriteBatch();
 
@@ -47,7 +50,7 @@ public class MainMenuScreen implements Screen {
 
         spriteBatch.end();
 
-        if (playerInput.isTouched()) {
+        if (handleStartGameRequest()) {
             gameContext.defaultScreenNavigator().showGame();
             log.info("Game Screen Loaded.");
             log.info("Game started.");
@@ -71,6 +74,10 @@ public class MainMenuScreen implements Screen {
                                   float worldWidth, float y) {
         glyphLayout.setText(font, text);
         font.draw(spriteBatch, glyphLayout, (worldWidth - glyphLayout.width) / 2f, y);
+    }
+
+    private boolean handleStartGameRequest() {
+        return playerInput.isTouched() || inputProcessor.consumeStartGameRequest();
     }
 
     @Override

@@ -25,7 +25,7 @@ import static com.artem.drop.GameConstants.WORLD_HEIGHT;
 public class AssetService {
 
     private static final int HUD_FONT_SIZE = 24;
-    private static final int MENU_FONT_SIZE = 48;
+    private static final int MENU_FONT_SIZE = 36;
     private static final int PAUSE_FONT_SIZE = 64;
 
     private final AssetManager assetManager;

@@ -45,7 +45,7 @@ public class DropGame extends Game {
             .assetService(assets)
             .defaultScreenNavigator(defaultScreenNavigator)
             .playerInput(new DesktopPlayerInput())
-            .gameInputProcessor(gameInputProcessor)
+            .inputProcessor(gameInputProcessor)
             .gameState(new GameState())
             .build();
 

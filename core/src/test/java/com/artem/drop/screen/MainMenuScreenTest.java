@@ -1,6 +1,7 @@
 package com.artem.drop.screen;
 
 import com.artem.drop.context.GameContext;
+import com.artem.drop.input.GameInputProcessor;
 import com.artem.drop.input.PlayerInput;
 import com.artem.drop.service.AssetService;
 import com.artem.drop.service.DefaultScreenNavigator;
@@ -32,6 +33,7 @@ class MainMenuScreenTest {
     private AssetService assetService;
     private FitViewport viewport;
     private PlayerInput playerInput;
+    private GameInputProcessor inputProcessor;
     private DefaultScreenNavigator navigator;
     private Music mainMenuMusic;
     private MainMenuScreen screen;
@@ -46,6 +48,8 @@ class MainMenuScreenTest {
         when(viewport.getCamera()).thenReturn(new OrthographicCamera());
 
         playerInput = mock(PlayerInput.class);
+        inputProcessor = mock(GameInputProcessor.class);
+
         navigator = mock(DefaultScreenNavigator.class);
 
         GameContext context = GameContext.builder()
@@ -54,6 +58,7 @@ class MainMenuScreenTest {
             .assetService(assetService)
             .defaultScreenNavigator(navigator)
             .playerInput(playerInput)
+            .inputProcessor(inputProcessor)
             .gameState(new GameState())
             .build();
 
@@ -82,8 +87,26 @@ class MainMenuScreenTest {
     }
 
     @Test
+    void renderWithoutConsumeStartGameRequestDoesNotNavigate() {
+        when(inputProcessor.consumeStartGameRequest()).thenReturn(false);
+
+        assertDoesNotThrow(() -> screen.render(0.1f));
+
+        verify(navigator, never()).showGame();
+    }
+
+    @Test
     void renderWhenTouchedNavigatesToGameScreen() {
         when(playerInput.isTouched()).thenReturn(true);
+
+        screen.render(0.1f);
+
+        verify(navigator).showGame();
+    }
+
+    @Test
+    void renderWhenConsumeStartGameRequestNavigatesToGameScreen() {
+        when(inputProcessor.consumeStartGameRequest()).thenReturn(true);
 
         screen.render(0.1f);
 
