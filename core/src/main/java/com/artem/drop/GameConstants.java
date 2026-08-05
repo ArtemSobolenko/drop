@@ -16,7 +16,10 @@ public final class GameConstants {
     public static final float DEFAULT_DROPLET_FALLING_SPEED = -2f;
 
     public static final float HUD_LINE_SPACING = 0.4f;
-    public static final float PAUSE_OVERLAY_LINE_SPACING = 1f;
+    // Small enough that pause title + 3 option lines all stay within
+    // WORLD_HEIGHT below the pause title's vertical center; a value of 1f
+    // pushed the third line below y=0, off the bottom of the viewport.
+    public static final float PAUSE_OVERLAY_LINE_SPACING = 0.6f;
 
     public static final String BACKGROUND_TEXTURE = "images/background.png";
     public static final String MAIN_BACKGROUND_TEXTURE = "images/main_background.png";

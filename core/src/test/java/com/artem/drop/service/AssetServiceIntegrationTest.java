@@ -129,4 +129,37 @@ class AssetServiceIntegrationTest {
 
         assertThrows(RuntimeException.class, service::getMainBackgroundTexture);
     }
+
+    /**
+     * Regression test for a crash where navigating back to MainMenuScreen after
+     * gameplay started (e.g. the pause menu's "back to main menu" option) threw
+     * GdxRuntimeException: Asset not loaded: music/main_menu.mp3 - the menu-only
+     * assets were unloaded on the way into GameScreen and never reloaded.
+     */
+    @Test
+    void ensureMainMenuAssetsLoadedReloadsAssetsThatWereUnloaded() {
+        AssetService service = new AssetService();
+        service.loadAllAssets();
+
+        service.unloadMainBackground();
+        service.unloadMainMenuMusic();
+        assertThrows(RuntimeException.class, service::getMainBackgroundTexture);
+        assertThrows(RuntimeException.class, service::getMainMenuMusic);
+
+        service.ensureMainMenuAssetsLoaded();
+
+        assertNotNull(service.getMainBackgroundTexture());
+        assertDoesNotThrow(service::getConfiguredMainMenuMusic);
+    }
+
+    @Test
+    void ensureMainMenuAssetsLoadedIsANoOpWhenAlreadyLoaded() {
+        AssetService service = new AssetService();
+        service.loadAllAssets();
+
+        assertDoesNotThrow(service::ensureMainMenuAssetsLoaded);
+
+        assertNotNull(service.getMainBackgroundTexture());
+        assertDoesNotThrow(service::getConfiguredMainMenuMusic);
+    }
 }

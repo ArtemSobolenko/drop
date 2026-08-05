@@ -221,7 +221,6 @@ public class GameScreen implements Screen {
             return;
         }
 
-        //pause
         BitmapFont pauseFont = assetService.getPauseFont();
         pausedLayout.setText(pauseFont, GAME_PAUSED_TEXT);
 
@@ -230,32 +229,19 @@ public class GameScreen implements Screen {
 
         pauseFont.draw(spriteBatch, pausedLayout, x, y);
 
-        //game exit
-        BitmapFont gameExitFont = assetService.getExitFont();
-        exitLayout.setText(gameExitFont, GAME_EXIT_TEXT);
+        drawPauseOverlayOption(assetService.getExitFont(), exitLayout, GAME_EXIT_TEXT, y, 1);
+        drawPauseOverlayOption(assetService.getRestartFont(), restartLayout, GAME_RESTART_TEXT, y, 2);
+        drawPauseOverlayOption(assetService.getBackToMenuFont(), mainMenuLayout, GAME_MAIN_MENU_TEXT, y, 3);
+    }
 
-        float exitX = (viewport.getWorldWidth() - exitLayout.width) / 2f;
-        float exitY = y - PAUSE_OVERLAY_LINE_SPACING;
+    private void drawPauseOverlayOption(BitmapFont font, GlyphLayout layout, String text,
+                                        float pausedTextY, int lineIndex) {
+        layout.setText(font, text);
 
-        gameExitFont.draw(spriteBatch, exitLayout, exitX, exitY);
+        float x = (viewport.getWorldWidth() - layout.width) / 2f;
+        float y = pausedTextY - lineIndex * PAUSE_OVERLAY_LINE_SPACING;
 
-        //restart exit
-        BitmapFont gameRestartFont = assetService.getRestartFont();
-        restartLayout.setText(gameRestartFont, GAME_RESTART_TEXT);
-
-        float restartX = (viewport.getWorldWidth() - restartLayout.width) / 2f;
-        float restartY = y - 2f * PAUSE_OVERLAY_LINE_SPACING;
-
-        gameRestartFont.draw(spriteBatch, restartLayout, restartX, restartY);
-
-        //back to main menu
-        BitmapFont backToMenuFont = assetService.getBackToMenuFont();
-        mainMenuLayout.setText(backToMenuFont, GAME_MAIN_MENU_TEXT);
-
-        float mainMenuX = (viewport.getWorldWidth() - mainMenuLayout.width) / 2f;
-        float mainMenuY = y - 3f * PAUSE_OVERLAY_LINE_SPACING;
-
-        backToMenuFont.draw(spriteBatch, mainMenuLayout, mainMenuX, mainMenuY);
+        font.draw(spriteBatch, layout, x, y);
     }
 
     @Override

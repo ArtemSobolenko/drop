@@ -144,6 +144,22 @@ public class AssetService {
         }
     }
 
+    /**
+     * Reloads whichever menu-only assets unloadMainBackground()/unloadMainMenuMusic()
+     * freed. Needed because gameplay can now navigate back to MainMenuScreen (e.g. the
+     * pause menu's "back to main menu" option), and MainMenuScreen.show() would otherwise
+     * try to play/draw assets the AssetManager no longer has loaded.
+     */
+    public void ensureMainMenuAssetsLoaded() {
+        if (!assetManager.isLoaded(MAIN_BACKGROUND_TEXTURE)) {
+            assetManager.load(MAIN_BACKGROUND_TEXTURE, Texture.class);
+        }
+        if (!assetManager.isLoaded(MAIN_MENU_MUSIC)) {
+            assetManager.load(MAIN_MENU_MUSIC, Music.class);
+        }
+        assetManager.finishLoading();
+    }
+
     private BitmapFont generateFont(int size, float scale) {
 
         FreeTypeFontGenerator.FreeTypeFontParameter parameter

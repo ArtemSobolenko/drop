@@ -16,7 +16,9 @@ public class DefaultScreenNavigator implements ScreenNavigator {
 
     @Override
     public void showMainMenu() {
-        game.setScreen(new MainMenuScreen(game.getContext()));
+        GameContext context = game.getContext();
+        context.assetService().ensureMainMenuAssetsLoaded();
+        game.setScreen(new MainMenuScreen(context));
     }
 
     @Override
