@@ -76,10 +76,4 @@ class DesktopPlayerInputTest {
         assertEquals(24f, pos.y);
     }
 
-    @Test
-    void delegatesPauseToEscapeKey() {
-        when(input.isKeyJustPressed(Input.Keys.ESCAPE)).thenReturn(true);
-
-        assertTrue(playerInput.isPausePressed());
-    }
 }

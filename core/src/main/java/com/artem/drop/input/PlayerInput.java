@@ -16,6 +16,4 @@ public interface PlayerInput {
 
     Vector2 getTouchPos();
 
-    boolean isPausePressed();
-
 }

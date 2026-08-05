@@ -2,6 +2,7 @@ package com.artem.drop.screen;
 
 import com.artem.drop.context.GameContext;
 import com.artem.drop.entity.Bucket;
+import com.artem.drop.input.GameInputProcessor;
 import com.artem.drop.input.PlayerInput;
 import com.artem.drop.service.AssetService;
 import com.artem.drop.service.DefaultScreenNavigator;
@@ -42,6 +43,7 @@ class GameScreenTest {
     private AssetService assetService;
     private FitViewport viewport;
     private PlayerInput playerInput;
+    private GameInputProcessor gameInputProcessor;
     private GameState gameState;
     private GameWorld gameWorld;
     private Music music;
@@ -57,6 +59,8 @@ class GameScreenTest {
         when(viewport.getCamera()).thenReturn(new OrthographicCamera());
 
         playerInput = mock(PlayerInput.class);
+        gameInputProcessor = mock(GameInputProcessor.class);
+
         gameState = new GameState();
 
         gameWorld = mock(GameWorld.class);
@@ -69,6 +73,7 @@ class GameScreenTest {
             .assetService(assetService)
             .defaultScreenNavigator(mock(DefaultScreenNavigator.class))
             .playerInput(playerInput)
+            .gameInputProcessor(gameInputProcessor)
             .gameState(gameState)
             .build();
 
@@ -96,7 +101,7 @@ class GameScreenTest {
 
     @Test
     void pausePressTogglesPauseAndSkipsWorldUpdate() {
-        when(playerInput.isPausePressed()).thenReturn(true);
+        when(gameInputProcessor.consumePauseRequest()).thenReturn(true);
 
         screen.render(0.1f);
 
@@ -106,7 +111,7 @@ class GameScreenTest {
 
     @Test
     void pausingMidGamePausesMusic() {
-        when(playerInput.isPausePressed()).thenReturn(true);
+        when(gameInputProcessor.consumePauseRequest()).thenReturn(true);
 
         screen.render(0.1f);
 
@@ -117,7 +122,7 @@ class GameScreenTest {
     void unpausingResumesMusic() {
         // Pause is a toggle (ESC again resumes), so pressing it on two
         // consecutive frames pauses then immediately resumes.
-        when(playerInput.isPausePressed()).thenReturn(true);
+        when(gameInputProcessor.consumePauseRequest()).thenReturn(true);
 
         screen.render(0.1f); // pauses
         screen.render(0.1f); // resumes
@@ -211,7 +216,7 @@ class GameScreenTest {
 
     @Test
     void rendersPauseOverlayWhenPausedWithoutThrowing() {
-        when(playerInput.isPausePressed()).thenReturn(true);
+        when(gameInputProcessor.consumePauseRequest()).thenReturn(true);
 
         assertDoesNotThrow(() -> screen.render(0.1f));
         assertTrue(gameState.isPaused());

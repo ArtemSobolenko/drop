@@ -2,10 +2,12 @@ package com.artem.drop;
 
 import com.artem.drop.context.GameContext;
 import com.artem.drop.input.DesktopPlayerInput;
+import com.artem.drop.input.GameInputProcessor;
 import com.artem.drop.service.AssetService;
 import com.artem.drop.service.DefaultScreenNavigator;
 import com.artem.drop.state.GameState;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import lombok.Getter;
@@ -34,14 +36,16 @@ public class DropGame extends Game {
         DefaultScreenNavigator defaultScreenNavigator
             = new DefaultScreenNavigator(this);
 
-        DesktopPlayerInput desktopPlayerInput = new DesktopPlayerInput();
+        GameInputProcessor gameInputProcessor = new GameInputProcessor();
+        Gdx.input.setInputProcessor(gameInputProcessor);
 
         context = GameContext.builder()
             .spriteBatch(new SpriteBatch())
             .viewport(viewport)
             .assetService(assets)
             .defaultScreenNavigator(defaultScreenNavigator)
-            .playerInput(desktopPlayerInput)
+            .playerInput(new DesktopPlayerInput())
+            .gameInputProcessor(gameInputProcessor)
             .gameState(new GameState())
             .build();
 

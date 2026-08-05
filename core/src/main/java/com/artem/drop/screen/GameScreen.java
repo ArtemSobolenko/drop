@@ -2,10 +2,12 @@ package com.artem.drop.screen;
 
 import com.artem.drop.context.GameContext;
 import com.artem.drop.entity.Drop;
+import com.artem.drop.input.GameInputProcessor;
 import com.artem.drop.input.PlayerInput;
 import com.artem.drop.service.AssetService;
 import com.artem.drop.state.GameState;
 import com.artem.drop.world.GameWorld;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -38,6 +40,8 @@ public class GameScreen implements Screen {
 
     private final PlayerInput playerInput;
 
+    private final GameInputProcessor gameInputProcessor;
+
     private boolean dragging = false;
     private boolean previousPausedState = false;
 
@@ -47,6 +51,7 @@ public class GameScreen implements Screen {
 
         this.assetService = context.assetService();
         this.playerInput = context.playerInput();
+        this.gameInputProcessor = context.gameInputProcessor();
         this.gameState = context.gameState();
         this.viewport = context.viewport();
         this.spriteBatch = context.spriteBatch();
@@ -63,7 +68,7 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         viewport.apply();
 
-        if (playerInput.isPausePressed()) {
+        if (gameInputProcessor.consumePauseRequest()) {
             gameState.togglePause();
         }
 
