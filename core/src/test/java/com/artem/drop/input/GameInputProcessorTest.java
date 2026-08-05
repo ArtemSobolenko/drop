@@ -30,7 +30,7 @@ class GameInputProcessorTest {
         return Stream.of(
             Input.Keys.ESCAPE,
             Input.Keys.SPACE,
-            Input.Keys.BACKSPACE
+            Input.Keys.Q
         );
     }
 

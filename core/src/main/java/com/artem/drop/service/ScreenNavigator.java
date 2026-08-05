@@ -6,4 +6,6 @@ public interface ScreenNavigator {
 
     void showGame();
 
+    void restartGame();
+
 }

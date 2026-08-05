@@ -5,6 +5,7 @@ import com.artem.drop.entity.Drop;
 import com.artem.drop.input.GameInputProcessor;
 import com.artem.drop.input.PlayerInput;
 import com.artem.drop.service.AssetService;
+import com.artem.drop.service.DefaultScreenNavigator;
 import com.artem.drop.state.GameState;
 import com.artem.drop.world.GameWorld;
 import com.badlogic.gdx.Gdx;
@@ -23,12 +24,14 @@ import static com.artem.drop.GameConstants.DEFAULT_SPEED_MULTIPLIER;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED_VOLUME;
 import static com.artem.drop.GameConstants.GAME_EXIT_TEXT;
 import static com.artem.drop.GameConstants.GAME_PAUSED_TEXT;
+import static com.artem.drop.GameConstants.GAME_RESTART_TEXT;
 
 @Slf4j
 public class GameScreen implements Screen {
 
     private final GlyphLayout pausedLayout;
     private final GlyphLayout exitLayout;
+    private final GlyphLayout restartLayout;
 
     private final FitViewport viewport;
 
@@ -44,6 +47,8 @@ public class GameScreen implements Screen {
 
     private final GameInputProcessor inputProcessor;
 
+    private final DefaultScreenNavigator screenNavigator;
+
     private boolean dragging = false;
     private boolean previousPausedState = false;
 
@@ -57,8 +62,10 @@ public class GameScreen implements Screen {
         this.gameState = context.gameState();
         this.viewport = context.viewport();
         this.spriteBatch = context.spriteBatch();
+        this.screenNavigator = context.defaultScreenNavigator();
         this.pausedLayout = new GlyphLayout();
         this.exitLayout = new GlyphLayout();
+        this.restartLayout = new GlyphLayout();
     }
 
     @Override
@@ -77,20 +84,25 @@ public class GameScreen implements Screen {
 
         updatePauseState();
 
-        if (!gameState.isPaused()) {
-            handleInput(delta);
-            gameWorld.update(delta);
-        }
-
         if (gameState.isPaused()) {
+
             if (inputProcessor.consumeGameExitRequest()) {
                 Gdx.app.exit();
                 return;
             }
+
+            if (inputProcessor.consumeGameRestartRequest()) {
+                gameState.setPlaying();
+                screenNavigator.restartGame();
+                return;
+            }
+
             draw();
             return;
         }
 
+        handleInput(delta);
+        gameWorld.update(delta);
         draw();
     }
 
@@ -215,6 +227,15 @@ public class GameScreen implements Screen {
         float exitY = y - 1f;
 
         gameExitFont.draw(spriteBatch, exitLayout, exitX, exitY);
+
+        //restart exit
+        BitmapFont gameRestartFont = assetService.getRestartFont();
+        restartLayout.setText(gameRestartFont, GAME_RESTART_TEXT);
+
+        float restartX = (viewport.getWorldWidth() - restartLayout.width) / 2f;
+        float restartY = y - 2f;
+
+        gameRestartFont.draw(spriteBatch, restartLayout, restartX, restartY);
     }
 
     @Override
