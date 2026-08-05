@@ -7,6 +7,7 @@ import com.artem.drop.input.PlayerInput;
 import com.artem.drop.service.AssetService;
 import com.artem.drop.state.GameState;
 import com.artem.drop.world.GameWorld;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -20,12 +21,14 @@ import lombok.extern.slf4j.Slf4j;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED_MULTIPLIER;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED_VOLUME;
+import static com.artem.drop.GameConstants.GAME_EXIT_TEXT;
 import static com.artem.drop.GameConstants.GAME_PAUSED_TEXT;
 
 @Slf4j
 public class GameScreen implements Screen {
 
-    private final GlyphLayout glyphLayout;
+    private final GlyphLayout pausedLayout;
+    private final GlyphLayout exitLayout;
 
     private final FitViewport viewport;
 
@@ -54,7 +57,8 @@ public class GameScreen implements Screen {
         this.gameState = context.gameState();
         this.viewport = context.viewport();
         this.spriteBatch = context.spriteBatch();
-        this.glyphLayout = new GlyphLayout();
+        this.pausedLayout = new GlyphLayout();
+        this.exitLayout = new GlyphLayout();
     }
 
     @Override
@@ -77,6 +81,16 @@ public class GameScreen implements Screen {
             handleInput(delta);
             gameWorld.update(delta);
         }
+
+        if (gameState.isPaused()) {
+            if (inputProcessor.consumeGameExitRequest()) {
+                Gdx.app.exit();
+                return;
+            }
+            draw();
+            return;
+        }
+
         draw();
     }
 
@@ -184,14 +198,23 @@ public class GameScreen implements Screen {
             return;
         }
 
-        BitmapFont font = assetService.getPauseFont();
+        //pause
+        BitmapFont pauseFont = assetService.getPauseFont();
+        pausedLayout.setText(pauseFont, GAME_PAUSED_TEXT);
 
-        glyphLayout.setText(font, GAME_PAUSED_TEXT);
+        float x = (viewport.getWorldWidth() - pausedLayout.width) / 2f;
+        float y = (viewport.getWorldHeight() + pausedLayout.height) / 2f;
 
-        float x = (viewport.getWorldWidth() - glyphLayout.width) / 2f;
-        float y = (viewport.getWorldHeight() + glyphLayout.height) / 2f;
+        pauseFont.draw(spriteBatch, pausedLayout, x, y);
 
-        font.draw(spriteBatch, glyphLayout, x, y);
+        //game exit
+        BitmapFont gameExitFont = assetService.getExitFont();
+        exitLayout.setText(gameExitFont, GAME_EXIT_TEXT);
+
+        float exitX = (viewport.getWorldWidth() - exitLayout.width) / 2f;
+        float exitY = y - 1f;
+
+        gameExitFont.draw(spriteBatch, exitLayout, exitX, exitY);
     }
 
     @Override

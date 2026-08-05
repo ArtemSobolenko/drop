@@ -29,7 +29,8 @@ class GameInputProcessorTest {
     static Stream<Integer> handledKeys() {
         return Stream.of(
             Input.Keys.ESCAPE,
-            Input.Keys.SPACE
+            Input.Keys.SPACE,
+            Input.Keys.BACKSPACE
         );
     }
 

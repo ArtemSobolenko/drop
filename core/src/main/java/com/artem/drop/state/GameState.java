@@ -5,18 +5,33 @@ import lombok.Getter;
 @Getter
 public class GameState {
 
-    private boolean paused;
-
-    public void pause() {
-        paused = true;
+    public enum Mode {
+        PLAYING,
+        PAUSED
     }
 
-    public void resume() {
-        paused = false;
+    private Mode mode = Mode.PLAYING;
+
+    public boolean isPlaying() {
+        return mode == Mode.PLAYING;
+    }
+
+    public boolean isPaused() {
+        return mode == Mode.PAUSED;
     }
 
     public void togglePause() {
-        paused = !paused;
+        mode = isPlaying()
+            ? Mode.PAUSED
+            : Mode.PLAYING;
+    }
+
+    public void setPlaying() {
+        mode = Mode.PLAYING;
+    }
+
+    public void setPaused() {
+        mode = Mode.PAUSED;
     }
 
 }

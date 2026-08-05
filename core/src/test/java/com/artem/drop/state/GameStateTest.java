@@ -15,15 +15,15 @@ class GameStateTest {
     @Test
     void pauseSetsPausedTrue() {
         GameState state = new GameState();
-        state.pause();
+        state.setPaused();
         assertTrue(state.isPaused());
     }
 
     @Test
     void resumeSetsPausedFalse() {
         GameState state = new GameState();
-        state.pause();
-        state.resume();
+        state.setPaused();
+        state.setPlaying();
         assertFalse(state.isPaused());
     }
 
