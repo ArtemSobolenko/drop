@@ -1,9 +1,12 @@
 package com.artem.drop.service;
 
 import com.artem.drop.support.GdxTestEnvironment;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Field;
 
 import static com.artem.drop.GameConstants.WORLD_HEIGHT;
 import static com.artem.drop.support.GdxTestEnvironment.SCREEN_HEIGHT;
@@ -11,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 /**
  * Loads the real asset files (real PNG decode, real TTF parsing) through a
@@ -67,6 +72,47 @@ class AssetServiceIntegrationTest {
 
         assertDoesNotThrow(service::getConfiguredMusic);
         assertDoesNotThrow(service::getConfiguredMainMenuMusic);
+    }
+
+    /**
+     * Regression test for a resource leak where disposeAll() only disposed
+     * hudFont/menuFont/pauseFont and left exitFont/restartFont (and their
+     * underlying native FreeType glyph textures) undisposed on shutdown.
+     */
+    @Test
+    void disposeAllDisposesEveryGeneratedFont() throws ReflectiveOperationException {
+        AssetService service = new AssetService();
+        service.loadAllAssets();
+
+        BitmapFont hudFont = spy(service.getHudFont());
+        BitmapFont menuFont = spy(service.getMenuFont());
+        BitmapFont pauseFont = spy(service.getPauseFont());
+        BitmapFont exitFont = spy(service.getExitFont());
+        BitmapFont restartFont = spy(service.getRestartFont());
+        BitmapFont backToMenuFont = spy(service.getBackToMenuFont());
+
+        replaceFontField(service, "hudFont", hudFont);
+        replaceFontField(service, "menuFont", menuFont);
+        replaceFontField(service, "pauseFont", pauseFont);
+        replaceFontField(service, "exitFont", exitFont);
+        replaceFontField(service, "restartFont", restartFont);
+        replaceFontField(service, "backToMenuFont", backToMenuFont);
+
+        service.disposeAll();
+
+        verify(hudFont).dispose();
+        verify(menuFont).dispose();
+        verify(pauseFont).dispose();
+        verify(exitFont).dispose();
+        verify(restartFont).dispose();
+        verify(backToMenuFont).dispose();
+    }
+
+    private void replaceFontField(AssetService service, String fieldName, BitmapFont value)
+        throws ReflectiveOperationException {
+        Field field = AssetService.class.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(service, value);
     }
 
     @Test

@@ -9,6 +9,7 @@ public class GameInputProcessor extends InputAdapter {
     private boolean startGameRequested;
     private boolean gameExitRequested;
     private boolean gameRestartRequested;
+    private boolean mainMenuRequested;
 
     @Override
     public boolean keyDown(int keycode) {
@@ -27,6 +28,10 @@ public class GameInputProcessor extends InputAdapter {
             }
             case Input.Keys.R -> {
                 gameRestartRequested = true;
+                yield true;
+            }
+            case Input.Keys.BACKSPACE -> {
+                mainMenuRequested = true;
                 yield true;
             }
             default -> false;
@@ -56,6 +61,12 @@ public class GameInputProcessor extends InputAdapter {
     public boolean consumeGameRestartRequest() {
         boolean result = gameRestartRequested;
         gameRestartRequested = false;
+        return result;
+    }
+
+    public boolean consumeMainMenuRequest() {
+        boolean result = mainMenuRequested;
+        mainMenuRequested = false;
         return result;
     }
 }

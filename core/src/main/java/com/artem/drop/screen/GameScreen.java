@@ -23,8 +23,11 @@ import static com.artem.drop.GameConstants.DEFAULT_SPEED;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED_MULTIPLIER;
 import static com.artem.drop.GameConstants.DEFAULT_SPEED_VOLUME;
 import static com.artem.drop.GameConstants.GAME_EXIT_TEXT;
+import static com.artem.drop.GameConstants.GAME_MAIN_MENU_TEXT;
 import static com.artem.drop.GameConstants.GAME_PAUSED_TEXT;
 import static com.artem.drop.GameConstants.GAME_RESTART_TEXT;
+import static com.artem.drop.GameConstants.HUD_LINE_SPACING;
+import static com.artem.drop.GameConstants.PAUSE_OVERLAY_LINE_SPACING;
 
 @Slf4j
 public class GameScreen implements Screen {
@@ -32,6 +35,7 @@ public class GameScreen implements Screen {
     private final GlyphLayout pausedLayout;
     private final GlyphLayout exitLayout;
     private final GlyphLayout restartLayout;
+    private final GlyphLayout mainMenuLayout;
 
     private final FitViewport viewport;
 
@@ -66,6 +70,7 @@ public class GameScreen implements Screen {
         this.pausedLayout = new GlyphLayout();
         this.exitLayout = new GlyphLayout();
         this.restartLayout = new GlyphLayout();
+        this.mainMenuLayout = new GlyphLayout();
     }
 
     @Override
@@ -94,6 +99,12 @@ public class GameScreen implements Screen {
             if (inputProcessor.consumeGameRestartRequest()) {
                 gameState.setPlaying();
                 screenNavigator.restartGame();
+                return;
+            }
+
+            if (inputProcessor.consumeMainMenuRequest()) {
+                gameState.setPlaying();
+                screenNavigator.showMainMenu();
                 return;
             }
 
@@ -177,7 +188,7 @@ public class GameScreen implements Screen {
 
         font.draw(spriteBatch, "Drops collected: " + gameWorld.getDropsGathered(), 0, top);
 
-        font.draw(spriteBatch, "Drops missed: " + gameWorld.getDropsMissed(), 0, top - 0.4f);
+        font.draw(spriteBatch, "Drops missed: " + gameWorld.getDropsMissed(), 0, top - HUD_LINE_SPACING);
     }
 
     private void drawDrops() {
@@ -224,7 +235,7 @@ public class GameScreen implements Screen {
         exitLayout.setText(gameExitFont, GAME_EXIT_TEXT);
 
         float exitX = (viewport.getWorldWidth() - exitLayout.width) / 2f;
-        float exitY = y - 1f;
+        float exitY = y - PAUSE_OVERLAY_LINE_SPACING;
 
         gameExitFont.draw(spriteBatch, exitLayout, exitX, exitY);
 
@@ -233,9 +244,18 @@ public class GameScreen implements Screen {
         restartLayout.setText(gameRestartFont, GAME_RESTART_TEXT);
 
         float restartX = (viewport.getWorldWidth() - restartLayout.width) / 2f;
-        float restartY = y - 2f;
+        float restartY = y - 2f * PAUSE_OVERLAY_LINE_SPACING;
 
         gameRestartFont.draw(spriteBatch, restartLayout, restartX, restartY);
+
+        //back to main menu
+        BitmapFont backToMenuFont = assetService.getBackToMenuFont();
+        mainMenuLayout.setText(backToMenuFont, GAME_MAIN_MENU_TEXT);
+
+        float mainMenuX = (viewport.getWorldWidth() - mainMenuLayout.width) / 2f;
+        float mainMenuY = y - 3f * PAUSE_OVERLAY_LINE_SPACING;
+
+        backToMenuFont.draw(spriteBatch, mainMenuLayout, mainMenuX, mainMenuY);
     }
 
     @Override

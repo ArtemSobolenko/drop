@@ -30,7 +30,8 @@ class GameInputProcessorTest {
         return Stream.of(
             Input.Keys.ESCAPE,
             Input.Keys.SPACE,
-            Input.Keys.Q
+            Input.Keys.Q,
+            Input.Keys.BACKSPACE
         );
     }
 
@@ -69,5 +70,27 @@ class GameInputProcessorTest {
 
         assertTrue(inputProcessor.consumePauseRequest());
         assertFalse(inputProcessor.consumePauseRequest());
+    }
+
+    @Test
+    void shouldRequestMainMenuWhenBackspaceIsPressed() {
+        inputProcessor.keyDown(Input.Keys.BACKSPACE);
+
+        assertTrue(inputProcessor.consumeMainMenuRequest());
+    }
+
+    @Test
+    void shouldNotRequestMainMenuWhenSpaceIsPressed() {
+        inputProcessor.keyDown(Input.Keys.SPACE);
+
+        assertFalse(inputProcessor.consumeMainMenuRequest());
+    }
+
+    @Test
+    void shouldConsumeMainMenuRequestOnlyOnce() {
+        inputProcessor.keyDown(Input.Keys.BACKSPACE);
+
+        assertTrue(inputProcessor.consumeMainMenuRequest());
+        assertFalse(inputProcessor.consumeMainMenuRequest());
     }
 }

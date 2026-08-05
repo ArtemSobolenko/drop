@@ -9,6 +9,7 @@ import com.artem.drop.service.DefaultScreenNavigator;
 import com.artem.drop.state.GameState;
 import com.artem.drop.support.GdxTestEnvironment;
 import com.artem.drop.world.GameWorld;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -212,6 +213,76 @@ class GameScreenTest {
         screen.render(0.1f);
 
         verify(gameWorld, times(1)).setBucketCenterX(anyFloat());
+    }
+
+    @Test
+    void whenPausedAndExitRequestedExitsAppWithoutUpdatingWorld() {
+        when(gameInputProcessor.consumePauseRequest()).thenReturn(true);
+        screen.render(0.1f); // pauses
+
+        // Pause is a toggle, so the stub must go back to false or the next
+        // render would immediately resume instead of acting while paused.
+        when(gameInputProcessor.consumePauseRequest()).thenReturn(false);
+        when(gameInputProcessor.consumeGameExitRequest()).thenReturn(true);
+        screen.render(0.1f);
+
+        verify(Gdx.app).exit();
+        verify(gameWorld, never()).update(anyFloat());
+    }
+
+    @Test
+    void whenPausedAndRestartRequestedResumesAndStartsANewGame() {
+        DefaultScreenNavigator navigator = mock(DefaultScreenNavigator.class);
+        GameContext context = GameContext.builder()
+            .spriteBatch(mock(SpriteBatch.class))
+            .viewport(viewport)
+            .assetService(assetService)
+            .defaultScreenNavigator(navigator)
+            .playerInput(playerInput)
+            .inputProcessor(gameInputProcessor)
+            .gameState(gameState)
+            .build();
+        screen = new GameScreen(context, gameWorld);
+
+        when(gameInputProcessor.consumePauseRequest()).thenReturn(true);
+        screen.render(0.1f); // pauses
+
+        // Pause is a toggle, so the stub must go back to false or the next
+        // render would immediately resume instead of acting while paused.
+        when(gameInputProcessor.consumePauseRequest()).thenReturn(false);
+        when(gameInputProcessor.consumeGameRestartRequest()).thenReturn(true);
+        screen.render(0.1f);
+
+        assertFalse(gameState.isPaused());
+        verify(navigator).restartGame();
+    }
+
+    @Test
+    void whenPausedAndMainMenuRequestedResumesAndNavigatesToMainMenuWithoutUpdatingWorld() {
+        DefaultScreenNavigator navigator = mock(DefaultScreenNavigator.class);
+        GameContext context = GameContext.builder()
+            .spriteBatch(mock(SpriteBatch.class))
+            .viewport(viewport)
+            .assetService(assetService)
+            .defaultScreenNavigator(navigator)
+            .playerInput(playerInput)
+            .inputProcessor(gameInputProcessor)
+            .gameState(gameState)
+            .build();
+        screen = new GameScreen(context, gameWorld);
+
+        when(gameInputProcessor.consumePauseRequest()).thenReturn(true);
+        screen.render(0.1f); // pauses
+
+        // Pause is a toggle, so the stub must go back to false or the next
+        // render would immediately resume instead of acting while paused.
+        when(gameInputProcessor.consumePauseRequest()).thenReturn(false);
+        when(gameInputProcessor.consumeMainMenuRequest()).thenReturn(true);
+        screen.render(0.1f);
+
+        assertFalse(gameState.isPaused());
+        verify(navigator).showMainMenu();
+        verify(gameWorld, never()).update(anyFloat());
     }
 
     @Test

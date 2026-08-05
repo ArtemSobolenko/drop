@@ -27,8 +27,9 @@ public class AssetService {
     private static final int HUD_FONT_SIZE = 24;
     private static final int MENU_FONT_SIZE = 36;
     private static final int PAUSE_FONT_SIZE = 64;
-    private static final int GAME_EXIT_FONT_SIZE = 36;
-    private static final int GAME_RESTART_FONT_SIZE = 36;
+    private static final int GAME_EXIT_FONT_SIZE = 18;
+    private static final int GAME_RESTART_FONT_SIZE = 18;
+    private static final int BACK_TO_MENU_FONT_SIZE = 18;
 
     private final AssetManager assetManager;
     private final FreeTypeFontGenerator fontGenerator;
@@ -43,6 +44,8 @@ public class AssetService {
     private BitmapFont exitFont;
     @Getter
     private BitmapFont restartFont;
+    @Getter
+    private BitmapFont backToMenuFont;
 
     public AssetService() {
         this.assetManager = new AssetManager();
@@ -76,6 +79,7 @@ public class AssetService {
         this.pauseFont = this.generateFont(PAUSE_FONT_SIZE, fontScale);
         this.exitFont = this.generateFont(GAME_EXIT_FONT_SIZE, fontScale);
         this.restartFont = this.generateFont(GAME_RESTART_FONT_SIZE, fontScale);
+        this.backToMenuFont = this.generateFont(BACK_TO_MENU_FONT_SIZE, fontScale);
     }
 
     public Texture getMainBackgroundTexture() {
@@ -158,6 +162,9 @@ public class AssetService {
         hudFont.dispose();
         menuFont.dispose();
         pauseFont.dispose();
+        exitFont.dispose();
+        restartFont.dispose();
+        backToMenuFont.dispose();
         fontGenerator.dispose();
         assetManager.dispose();
     }

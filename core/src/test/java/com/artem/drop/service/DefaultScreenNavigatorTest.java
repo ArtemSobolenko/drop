@@ -65,4 +65,13 @@ class DefaultScreenNavigatorTest {
         verify(game).setScreen(captor.capture());
         assertInstanceOf(GameScreen.class, captor.getValue());
     }
+
+    @Test
+    void restartGameSwitchesToAFreshGameScreen() {
+        game.getContext().defaultScreenNavigator().restartGame();
+
+        ArgumentCaptor<Screen> captor = ArgumentCaptor.forClass(Screen.class);
+        verify(game).setScreen(captor.capture());
+        assertInstanceOf(GameScreen.class, captor.getValue());
+    }
 }
