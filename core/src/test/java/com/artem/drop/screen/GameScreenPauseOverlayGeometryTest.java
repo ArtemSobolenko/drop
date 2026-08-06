@@ -45,13 +45,12 @@ class GameScreenPauseOverlayGeometryTest {
         GlyphLayout pausedLayout = new GlyphLayout(assetService.getPauseFont(), GAME_PAUSED_TEXT);
         float pausedTextY = (WORLD_HEIGHT + pausedLayout.height) / 2f;
 
-        assertLineIsOnScreen(assetService.getExitFont(), GAME_EXIT_TEXT, pausedTextY, 1);
-        assertLineIsOnScreen(assetService.getRestartFont(), GAME_RESTART_TEXT, pausedTextY, 2);
-        assertLineIsOnScreen(assetService.getBackToMenuFont(), GAME_MAIN_MENU_TEXT, pausedTextY, 3);
+        assertLineIsOnScreen(GAME_EXIT_TEXT, pausedTextY, 1);
+        assertLineIsOnScreen(GAME_RESTART_TEXT, pausedTextY, 2);
+        assertLineIsOnScreen(GAME_MAIN_MENU_TEXT, pausedTextY, 3);
     }
 
-    private void assertLineIsOnScreen(BitmapFont font, String text, float pausedTextY, int lineIndex) {
-        GlyphLayout layout = new GlyphLayout(font, text);
+    private void assertLineIsOnScreen(String text, float pausedTextY, int lineIndex) {
         float y = pausedTextY - lineIndex * PAUSE_OVERLAY_LINE_SPACING;
 
         assertTrue(y >= 0f && y <= WORLD_HEIGHT,

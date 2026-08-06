@@ -77,10 +77,7 @@ public class RainIntroScreen implements Screen {
         BitmapFont font = assetService.getHudFont();
         glyphLayout.setText(font, RAIN_INTRO_TEXT);
 
-        float x = RAIN_INTRO_TEXT_MARGIN;
-        float y = RAIN_INTRO_TEXT_MARGIN + glyphLayout.height;
-
-        font.draw(spriteBatch, glyphLayout, x, y);
+        font.draw(spriteBatch, glyphLayout, RAIN_INTRO_TEXT_MARGIN, RAIN_INTRO_TEXT_MARGIN + glyphLayout.height);
     }
 
     @Override

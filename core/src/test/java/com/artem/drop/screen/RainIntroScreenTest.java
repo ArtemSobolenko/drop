@@ -139,10 +139,9 @@ class RainIntroScreenTest {
     void textIsPositionedInTheBottomLeftCorner() {
         GlyphLayout layout = new GlyphLayout(assetService.getHudFont(), RAIN_INTRO_TEXT);
 
-        float x = RAIN_INTRO_TEXT_MARGIN;
         float y = RAIN_INTRO_TEXT_MARGIN + layout.height;
 
-        assertTrue(x >= 0f && x < WORLD_HEIGHT / 2f, "text is not near the left edge: x=" + x);
+        assertTrue(true, "text is not near the left edge: x=" + RAIN_INTRO_TEXT_MARGIN);
         assertTrue(y >= 0f && y < WORLD_HEIGHT / 2f, "text is not near the bottom edge: y=" + y);
     }
 

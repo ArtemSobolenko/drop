@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
  * Loads the real asset files (real PNG decode, real TTF parsing) through a
  * real AssetManager and FreeTypeFontGenerator - only the GPU (GL20) and audio
  * backend are mocked, since those need real hardware/drivers.
- *
+
  * This is a regression test for the bug where fonts were generated at a raw
  * pixel size without being scaled down to world units, making menu/HUD/pause
  * text render many times larger than the viewport.

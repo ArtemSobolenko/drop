@@ -1,7 +1,6 @@
 package com.artem.drop.screen;
 
 import com.artem.drop.context.GameContext;
-import com.artem.drop.input.GameInputProcessor;
 import com.artem.drop.input.MainMenuInputProcessor;
 import com.artem.drop.input.PlayerInput;
 import com.artem.drop.service.AssetService;
