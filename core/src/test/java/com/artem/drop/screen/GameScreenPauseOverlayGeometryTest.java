@@ -2,7 +2,6 @@ package com.artem.drop.screen;
 
 import com.artem.drop.service.AssetService;
 import com.artem.drop.support.GdxTestEnvironment;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
