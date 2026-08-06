@@ -49,6 +49,8 @@ public class RainIntroScreen implements Screen {
         Gdx.input.setInputProcessor(null);
         elapsedTime = 0f;
         navigatedToGame = false;
+
+        assetService.getThundeIntroSound().play();
     }
 
     @Override

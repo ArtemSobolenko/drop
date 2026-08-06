@@ -72,6 +72,12 @@ class RainIntroScreenTest {
     }
 
     @Test
+    void showShouldPlayThunderSound() {
+        screen.show();
+        verify(assetService.getThundeIntroSound()).play();
+    }
+
+    @Test
     void rendersWithBlackBackground() {
         screen.render(0.1f);
 

@@ -34,7 +34,7 @@ public final class GameConstants {
     public static final float MAIN_MENU_TITLE_Y_FRACTION = 0.35f;
     public static final float MAIN_MENU_SUBTITLE_Y_FRACTION = 0.20f;
 
-    public static final float RAIN_INTRO_DURATION_SECONDS = 3f;
+    public static final float RAIN_INTRO_DURATION_SECONDS = 5f;
     public static final float RAIN_INTRO_TEXT_MARGIN = 0.2f;
 
     public static final int HUD_FONT_SIZE = 24;
@@ -53,6 +53,7 @@ public final class GameConstants {
     public static final String DROP_SOUND = "sounds/drop.mp3";
     public static final String SPEED_SOUND = "sounds/speed.mp3";
     public static final String DROP_MISS_SOUND = "sounds/drop_miss.mp3";
+    public static final String THUNDER_INTRO_SOUND = "sounds/thunder-intro.mp3";
 
     public static final String GAME_MUSIC = "music/music.mp3";
     public static final String MAIN_MENU_MUSIC = "music/main_menu.mp3";

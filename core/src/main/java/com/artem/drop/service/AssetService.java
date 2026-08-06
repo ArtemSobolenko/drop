@@ -20,6 +20,7 @@ import static com.artem.drop.GameConstants.MAIN_BACKGROUND_TEXTURE;
 import static com.artem.drop.GameConstants.MAIN_MENU_MUSIC;
 import static com.artem.drop.GameConstants.ROBOTO_REGULAR_FRONT;
 import static com.artem.drop.GameConstants.SPEED_SOUND;
+import static com.artem.drop.GameConstants.THUNDER_INTRO_SOUND;
 import static com.artem.drop.GameConstants.WORLD_HEIGHT;
 
 public class AssetService {
@@ -63,6 +64,7 @@ public class AssetService {
         assetManager.load(DROP_SOUND, Sound.class);
         assetManager.load(SPEED_SOUND, Sound.class);
         assetManager.load(DROP_MISS_SOUND, Sound.class);
+        assetManager.load(THUNDER_INTRO_SOUND, Sound.class);
 
         assetManager.load(GAME_MUSIC, Music.class);
         assetManager.load(MAIN_MENU_MUSIC, Music.class);
@@ -108,6 +110,10 @@ public class AssetService {
 
     public Sound getSpeedSound() {
         return assetManager.get(SPEED_SOUND, Sound.class);
+    }
+
+    public Sound getThundeIntroSound() {
+        return assetManager.get(THUNDER_INTRO_SOUND, Sound.class);
     }
 
     public Music getMusic() {

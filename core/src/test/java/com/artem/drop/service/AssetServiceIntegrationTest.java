@@ -51,6 +51,7 @@ class AssetServiceIntegrationTest {
         assertNotNull(service.getDropSound());
         assertNotNull(service.getDropMissSound());
         assertNotNull(service.getSpeedSound());
+        assertNotNull(service.getThundeIntroSound());
         assertNotNull(service.getMusic());
         assertNotNull(service.getMainMenuMusic());
 

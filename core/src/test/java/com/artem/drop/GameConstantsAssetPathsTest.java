@@ -27,6 +27,7 @@ class GameConstantsAssetPathsTest {
             GameConstants.DROP_SOUND,
             GameConstants.SPEED_SOUND,
             GameConstants.DROP_MISS_SOUND,
+            GameConstants.THUNDER_INTRO_SOUND,
             GameConstants.GAME_MUSIC,
             GameConstants.MAIN_MENU_MUSIC,
             GameConstants.ROBOTO_REGULAR_FRONT
