@@ -6,6 +6,7 @@ import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
@@ -57,6 +58,8 @@ public final class GdxTestEnvironment {
         Gdx.audio = audio;
 
         Gdx.app = mock(Application.class);
+
+        Gdx.input = mock(Input.class);
     }
 
     public static void uninstall() {
@@ -66,6 +69,7 @@ public final class GdxTestEnvironment {
         Gdx.gl20 = null;
         Gdx.audio = null;
         Gdx.app = null;
+        Gdx.input = null;
     }
 
     public static AssetService loadRealAssetService() {

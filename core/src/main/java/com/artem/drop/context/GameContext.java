@@ -1,6 +1,7 @@
 package com.artem.drop.context;
 
 import com.artem.drop.input.GameInputProcessor;
+import com.artem.drop.input.MainMenuInputProcessor;
 import com.artem.drop.input.PlayerInput;
 import com.artem.drop.service.AssetService;
 import com.artem.drop.service.DefaultScreenNavigator;
@@ -18,6 +19,7 @@ public record GameContext(SpriteBatch spriteBatch,
                           DefaultScreenNavigator defaultScreenNavigator,
                           PlayerInput playerInput,
                           GameInputProcessor inputProcessor,
+                          MainMenuInputProcessor mainMenuInputProcessor,
                           GameState gameState) {
 
     public void disposeAll() {

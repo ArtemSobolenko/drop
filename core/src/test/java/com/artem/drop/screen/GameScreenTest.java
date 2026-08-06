@@ -10,6 +10,7 @@ import com.artem.drop.state.GameState;
 import com.artem.drop.support.GdxTestEnvironment;
 import com.artem.drop.world.GameWorld;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -94,6 +95,13 @@ class GameScreenTest {
     }
 
     @Test
+    void showActivatesGameInputProcessor() {
+        screen.show();
+
+        verify(Gdx.input).setInputProcessor(gameInputProcessor);
+    }
+
+    @Test
     void whenNotPausedUpdatesWorldWithFrameDelta() {
         screen.render(0.1f);
 
@@ -158,6 +166,22 @@ class GameScreenTest {
         screen.render(0.5f);
 
         verify(gameWorld).moveBucket(DEFAULT_SPEED * DEFAULT_SPEED_MULTIPLIER * 0.5f);
+    }
+
+    @Test
+    void jumpRequestedTriggersBucketJump() {
+        when(gameInputProcessor.consumePlayerJumpRequest()).thenReturn(true);
+
+        screen.render(0.1f);
+
+        verify(gameWorld).jumpBucket();
+    }
+
+    @Test
+    void noJumpRequestDoesNotTriggerBucketJump() {
+        screen.render(0.1f);
+
+        verify(gameWorld, never()).jumpBucket();
     }
 
     @Test
@@ -283,6 +307,83 @@ class GameScreenTest {
         assertFalse(gameState.isPaused());
         verify(navigator).showMainMenu();
         verify(gameWorld, never()).update(anyFloat());
+    }
+
+    /**
+     * Regression test for a bug where pressing BACKSPACE while actively
+     * playing (not paused) left GameInputProcessor's mainMenuRequested flag
+     * stuck true - GameScreen only ever consumed it inside the "paused"
+     * branch - so the next time the player paused via ESC, it fired
+     * immediately and dropped them straight back to the main menu.
+     */
+    @Test
+    void pressingMainMenuKeyWhilePlayingDoesNotFireOnTheNextPause() {
+        GameInputProcessor realInputProcessor = new GameInputProcessor();
+        DefaultScreenNavigator navigator = mock(DefaultScreenNavigator.class);
+        screen = newScreenWithRealInputProcessor(realInputProcessor, navigator);
+
+        // Not paused yet - BACKSPACE must have no effect.
+        realInputProcessor.keyDown(Input.Keys.BACKSPACE);
+        screen.render(0.1f);
+
+        assertFalse(gameState.isPaused());
+        verify(navigator, never()).showMainMenu();
+
+        // The earlier BACKSPACE must not fire now just because we paused.
+        realInputProcessor.keyDown(Input.Keys.ESCAPE);
+        screen.render(0.1f);
+
+        assertTrue(gameState.isPaused());
+        verify(navigator, never()).showMainMenu();
+    }
+
+    @Test
+    void pressingExitKeyWhilePlayingDoesNotFireOnTheNextPause() {
+        GameInputProcessor realInputProcessor = new GameInputProcessor();
+        screen = newScreenWithRealInputProcessor(realInputProcessor, mock(DefaultScreenNavigator.class));
+
+        realInputProcessor.keyDown(Input.Keys.Q);
+        screen.render(0.1f);
+
+        assertFalse(gameState.isPaused());
+
+        realInputProcessor.keyDown(Input.Keys.ESCAPE);
+        screen.render(0.1f);
+
+        assertTrue(gameState.isPaused());
+        verify(Gdx.app, never()).exit();
+    }
+
+    @Test
+    void pressingRestartKeyWhilePlayingDoesNotFireOnTheNextPause() {
+        GameInputProcessor realInputProcessor = new GameInputProcessor();
+        DefaultScreenNavigator navigator = mock(DefaultScreenNavigator.class);
+        screen = newScreenWithRealInputProcessor(realInputProcessor, navigator);
+
+        realInputProcessor.keyDown(Input.Keys.R);
+        screen.render(0.1f);
+
+        assertFalse(gameState.isPaused());
+
+        realInputProcessor.keyDown(Input.Keys.ESCAPE);
+        screen.render(0.1f);
+
+        assertTrue(gameState.isPaused());
+        verify(navigator, never()).restartGame();
+    }
+
+    private GameScreen newScreenWithRealInputProcessor(GameInputProcessor realInputProcessor,
+                                                        DefaultScreenNavigator navigator) {
+        GameContext context = GameContext.builder()
+            .spriteBatch(mock(SpriteBatch.class))
+            .viewport(viewport)
+            .assetService(assetService)
+            .defaultScreenNavigator(navigator)
+            .playerInput(playerInput)
+            .inputProcessor(realInputProcessor)
+            .gameState(gameState)
+            .build();
+        return new GameScreen(context, gameWorld);
     }
 
     @Test

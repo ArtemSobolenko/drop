@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import static com.artem.drop.GameConstants.DEFAULT_DROPLET_CREATION_DELAY;
 import static com.artem.drop.GameConstants.WORLD_WIDTH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -100,5 +101,13 @@ class GameWorldIntegrationTest {
         assertEquals(1, world.getDropsMissed());
         assertEquals(0, world.getDrops().size);
         verify(dropMissSound, times(1)).play();
+    }
+
+    @Test
+    void jumpBucketMovesTheBucketUpwardOnTheNextUpdate() {
+        world.jumpBucket();
+        world.update(0.05f);
+
+        assertTrue(world.getBucket().getY() > 0f);
     }
 }

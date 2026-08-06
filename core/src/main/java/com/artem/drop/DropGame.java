@@ -3,11 +3,11 @@ package com.artem.drop;
 import com.artem.drop.context.GameContext;
 import com.artem.drop.input.DesktopPlayerInput;
 import com.artem.drop.input.GameInputProcessor;
+import com.artem.drop.input.MainMenuInputProcessor;
 import com.artem.drop.service.AssetService;
 import com.artem.drop.service.DefaultScreenNavigator;
 import com.artem.drop.state.GameState;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import lombok.Getter;
@@ -37,8 +37,14 @@ public class DropGame extends Game {
             = new DefaultScreenNavigator(this);
 
         GameInputProcessor gameInputProcessor = new GameInputProcessor();
-        Gdx.input.setInputProcessor(gameInputProcessor);
+        MainMenuInputProcessor mainMenuInputProcessor = new MainMenuInputProcessor();
 
+        // Each screen activates its own input processor in show() rather than
+        // sharing one app-wide processor/multiplexer - GameInputProcessor and
+        // MainMenuInputProcessor both bind SPACE to different meanings (jump
+        // vs. start game), so both being permanently active at once meant
+        // whichever was listed first in a multiplexer silently swallowed the
+        // other's SPACE presses.
         context = GameContext.builder()
             .spriteBatch(new SpriteBatch())
             .viewport(viewport)
@@ -46,6 +52,7 @@ public class DropGame extends Game {
             .defaultScreenNavigator(defaultScreenNavigator)
             .playerInput(new DesktopPlayerInput())
             .inputProcessor(gameInputProcessor)
+            .mainMenuInputProcessor(mainMenuInputProcessor)
             .gameState(new GameState())
             .build();
 

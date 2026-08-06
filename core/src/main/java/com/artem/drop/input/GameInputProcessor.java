@@ -6,10 +6,10 @@ import com.badlogic.gdx.InputAdapter;
 public class GameInputProcessor extends InputAdapter {
 
     private boolean pauseRequested;
-    private boolean startGameRequested;
     private boolean gameExitRequested;
     private boolean gameRestartRequested;
     private boolean mainMenuRequested;
+    private boolean playerJumpRequested;
 
     @Override
     public boolean keyDown(int keycode) {
@@ -19,7 +19,7 @@ public class GameInputProcessor extends InputAdapter {
                 yield true;
             }
             case Input.Keys.SPACE -> {
-                startGameRequested = true;
+                playerJumpRequested = true;
                 yield true;
             }
             case Input.Keys.Q -> {
@@ -46,12 +46,6 @@ public class GameInputProcessor extends InputAdapter {
         return true;
     }
 
-    public boolean consumeStartGameRequest() {
-        boolean result = startGameRequested;
-        startGameRequested = false;
-        return result;
-    }
-
     public boolean consumeGameExitRequest() {
         boolean result = gameExitRequested;
         gameExitRequested = false;
@@ -68,5 +62,25 @@ public class GameInputProcessor extends InputAdapter {
         boolean result = mainMenuRequested;
         mainMenuRequested = false;
         return result;
+    }
+
+    public boolean consumePlayerJumpRequest() {
+        boolean result = playerJumpRequested;
+        playerJumpRequested = false;
+        return result;
+    }
+
+    /**
+     * Clears exit/restart/main-menu requests without acting on them. These
+     * keys only make sense from the pause menu, but keyDown() sets their flag
+     * the instant the key is pressed regardless of pause state. Without this,
+     * pressing e.g. BACKSPACE while actively playing left mainMenuRequested
+     * stuck true, and the next time the player paused it fired immediately -
+     * as if they'd pressed BACKSPACE again from the menu they hadn't reached yet.
+     */
+    public void discardPauseMenuRequests() {
+        gameExitRequested = false;
+        gameRestartRequested = false;
+        mainMenuRequested = false;
     }
 }

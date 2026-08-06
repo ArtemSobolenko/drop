@@ -1,12 +1,13 @@
 package com.artem.drop.screen;
 
 import com.artem.drop.context.GameContext;
-import com.artem.drop.input.GameInputProcessor;
+import com.artem.drop.input.MainMenuInputProcessor;
 import com.artem.drop.input.PlayerInput;
 import com.artem.drop.service.AssetService;
 import com.artem.drop.service.DefaultScreenNavigator;
 import com.artem.drop.state.GameState;
 import com.artem.drop.support.GdxTestEnvironment;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -33,7 +34,7 @@ class MainMenuScreenTest {
     private AssetService assetService;
     private FitViewport viewport;
     private PlayerInput playerInput;
-    private GameInputProcessor inputProcessor;
+    private MainMenuInputProcessor inputProcessor;
     private DefaultScreenNavigator navigator;
     private Music mainMenuMusic;
     private MainMenuScreen screen;
@@ -48,7 +49,7 @@ class MainMenuScreenTest {
         when(viewport.getCamera()).thenReturn(new OrthographicCamera());
 
         playerInput = mock(PlayerInput.class);
-        inputProcessor = mock(GameInputProcessor.class);
+        inputProcessor = mock(MainMenuInputProcessor.class);
 
         navigator = mock(DefaultScreenNavigator.class);
 
@@ -58,7 +59,7 @@ class MainMenuScreenTest {
             .assetService(assetService)
             .defaultScreenNavigator(navigator)
             .playerInput(playerInput)
-            .inputProcessor(inputProcessor)
+            .mainMenuInputProcessor(inputProcessor)
             .gameState(new GameState())
             .build();
 
@@ -75,6 +76,13 @@ class MainMenuScreenTest {
         screen.show();
 
         verify(mainMenuMusic).play();
+    }
+
+    @Test
+    void showActivatesMainMenuInputProcessor() {
+        screen.show();
+
+        verify(Gdx.input).setInputProcessor(inputProcessor);
     }
 
     @Test

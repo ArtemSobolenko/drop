@@ -41,6 +41,7 @@ public class GameWorld {
     }
 
     public void update(float delta) {
+        updateBucket(delta);
         updateDrops(delta);
         spawnDrops(delta);
     }
@@ -48,6 +49,14 @@ public class GameWorld {
     public void moveBucket(float dx) {
         bucket.move(dx);
         clampBucket();
+    }
+
+    public void jumpBucket() {
+        bucket.jump();
+    }
+
+    private void updateBucket(float delta) {
+        bucket.update(delta);
     }
 
     public void setBucketCenterX(float centerX) {

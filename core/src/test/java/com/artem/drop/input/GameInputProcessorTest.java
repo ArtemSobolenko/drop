@@ -31,6 +31,7 @@ class GameInputProcessorTest {
             Input.Keys.ESCAPE,
             Input.Keys.SPACE,
             Input.Keys.Q,
+            Input.Keys.R,
             Input.Keys.BACKSPACE
         );
     }
@@ -92,5 +93,72 @@ class GameInputProcessorTest {
 
         assertTrue(inputProcessor.consumeMainMenuRequest());
         assertFalse(inputProcessor.consumeMainMenuRequest());
+    }
+
+    @Test
+    void shouldRequestPlayerJumpWhenSpaceIsPressed() {
+        inputProcessor.keyDown(Input.Keys.SPACE);
+
+        assertTrue(inputProcessor.consumePlayerJumpRequest());
+    }
+
+    @Test
+    void shouldNotRequestPlayerJumpWhenEscapeIsPressed() {
+        inputProcessor.keyDown(Input.Keys.ESCAPE);
+
+        assertFalse(inputProcessor.consumePlayerJumpRequest());
+    }
+
+    @Test
+    void shouldConsumePlayerJumpRequestOnlyOnce() {
+        inputProcessor.keyDown(Input.Keys.SPACE);
+
+        assertTrue(inputProcessor.consumePlayerJumpRequest());
+        assertFalse(inputProcessor.consumePlayerJumpRequest());
+    }
+
+    @Test
+    void shouldRequestGameExitWhenQIsPressed() {
+        inputProcessor.keyDown(Input.Keys.Q);
+
+        assertTrue(inputProcessor.consumeGameExitRequest());
+    }
+
+    @Test
+    void shouldRequestGameRestartWhenRIsPressed() {
+        inputProcessor.keyDown(Input.Keys.R);
+
+        assertTrue(inputProcessor.consumeGameRestartRequest());
+    }
+
+    /**
+     * Regression test for a bug where pressing Q/R/BACKSPACE while actively
+     * playing (not paused) left the corresponding flag stuck true - since
+     * GameScreen only ever consumed these inside its "paused" branch - so the
+     * next time the player paused, the stale request fired immediately as if
+     * they'd pressed the key again from the pause menu.
+     */
+    @Test
+    void discardPauseMenuRequestsClearsExitRestartAndMainMenuFlags() {
+        inputProcessor.keyDown(Input.Keys.Q);
+        inputProcessor.keyDown(Input.Keys.R);
+        inputProcessor.keyDown(Input.Keys.BACKSPACE);
+
+        inputProcessor.discardPauseMenuRequests();
+
+        assertFalse(inputProcessor.consumeGameExitRequest());
+        assertFalse(inputProcessor.consumeGameRestartRequest());
+        assertFalse(inputProcessor.consumeMainMenuRequest());
+    }
+
+    @Test
+    void discardPauseMenuRequestsDoesNotAffectPauseOrJumpFlags() {
+        inputProcessor.keyDown(Input.Keys.ESCAPE);
+        inputProcessor.keyDown(Input.Keys.SPACE);
+
+        inputProcessor.discardPauseMenuRequests();
+
+        assertTrue(inputProcessor.consumePauseRequest());
+        assertTrue(inputProcessor.consumePlayerJumpRequest());
     }
 }

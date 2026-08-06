@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -79,5 +80,68 @@ class BucketTest {
         bucket.render(batch);
 
         verify(sprite).draw(batch);
+    }
+
+    @Test
+    void jumpAloneDoesNotMoveTheBucketUntilUpdateIsCalled() {
+        Bucket bucket = newBucket();
+
+        bucket.jump();
+
+        assertEquals(0f, bucket.getY());
+    }
+
+    @Test
+    void jumpFromGroundMovesTheBucketUpwardOnTheNextUpdate() {
+        Bucket bucket = newBucket();
+
+        bucket.jump();
+        bucket.update(0.05f);
+
+        assertTrue(bucket.getY() > 0f);
+    }
+
+    @Test
+    void jumpingAgainWhileAirborneDoesNotAddExtraVelocity() {
+        Bucket jumpedOnce = newBucket();
+        jumpedOnce.jump();
+        jumpedOnce.update(0.1f);
+        jumpedOnce.update(0.1f);
+
+        Bucket jumpedTwice = newBucket();
+        jumpedTwice.jump();
+        jumpedTwice.update(0.1f);
+        jumpedTwice.jump(); // airborne - must be ignored
+        jumpedTwice.update(0.1f);
+
+        assertEquals(jumpedOnce.getY(), jumpedTwice.getY(), 1e-6f);
+    }
+
+    @Test
+    void bucketLandsBackAtGroundLevelAfterJumping() {
+        Bucket bucket = newBucket();
+
+        bucket.jump();
+        for (int i = 0; i < 200; i++) {
+            bucket.update(0.05f);
+        }
+
+        assertEquals(0f, bucket.getY());
+    }
+
+    @Test
+    void canJumpAgainAfterLanding() {
+        Bucket bucket = newBucket();
+
+        bucket.jump();
+        for (int i = 0; i < 200; i++) {
+            bucket.update(0.05f);
+        }
+        assertEquals(0f, bucket.getY());
+
+        bucket.jump();
+        bucket.update(0.05f);
+
+        assertTrue(bucket.getY() > 0f);
     }
 }

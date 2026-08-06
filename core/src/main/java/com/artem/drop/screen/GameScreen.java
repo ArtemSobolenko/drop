@@ -75,6 +75,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(inputProcessor);
         // start the playback of the background music when the screen is shown
         assetService.getConfiguredMusic().play();
     }
@@ -112,6 +113,11 @@ public class GameScreen implements Screen {
             return;
         }
 
+        // Exit/restart/main-menu are pause-menu-only actions; discard any
+        // pressed while actively playing so they can't fire unexpectedly the
+        // next time the player pauses.
+        inputProcessor.discardPauseMenuRequests();
+
         handleInput(delta);
         gameWorld.update(delta);
         draw();
@@ -126,14 +132,20 @@ public class GameScreen implements Screen {
             assetService.getSpeedSound().play(DEFAULT_SPEED_VOLUME);
         }
 
-        //move right
+        //move bucket right
         if (playerInput.isMoveRightPressed()) {
             gameWorld.moveBucket(speed * delta);
         }
 
-        //move left
+        //move bucket left
         if (playerInput.isMoveLeftPressed()) {
             gameWorld.moveBucket(-speed * delta);
+        }
+
+        //jump the bucket
+        if (inputProcessor.consumePlayerJumpRequest()) {
+            log.info("jump pressed");
+            gameWorld.jumpBucket();
         }
 
         handleTouchInput();

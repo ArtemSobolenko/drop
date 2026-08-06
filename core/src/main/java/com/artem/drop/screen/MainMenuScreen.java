@@ -2,8 +2,10 @@ package com.artem.drop.screen;
 
 import com.artem.drop.context.GameContext;
 import com.artem.drop.input.GameInputProcessor;
+import com.artem.drop.input.MainMenuInputProcessor;
 import com.artem.drop.input.PlayerInput;
 import com.artem.drop.service.AssetService;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -23,7 +25,7 @@ public class MainMenuScreen implements Screen {
     private final FitViewport viewport;
     private final AssetService assetService;
     private final PlayerInput playerInput;
-    private final GameInputProcessor inputProcessor;
+    private final MainMenuInputProcessor inputProcessor;
     private final GlyphLayout glyphLayout;
 
     public MainMenuScreen(GameContext gameContext) {
@@ -32,7 +34,7 @@ public class MainMenuScreen implements Screen {
         this.glyphLayout = new GlyphLayout();
         this.assetService = gameContext.assetService();
         this.playerInput = gameContext.playerInput();
-        this.inputProcessor = gameContext.inputProcessor();
+        this.inputProcessor = gameContext.mainMenuInputProcessor();
     }
 
     @Override
@@ -87,6 +89,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(inputProcessor);
         assetService.getConfiguredMainMenuMusic().play();
     }
 
