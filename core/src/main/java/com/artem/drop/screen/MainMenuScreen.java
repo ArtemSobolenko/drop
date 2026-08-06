@@ -15,8 +15,10 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.artem.drop.GameConstants.MAIN_MENU_SUBTITLE_Y_FRACTION;
 import static com.artem.drop.GameConstants.MAIN_MENU_SUB_TITLE_TEXT;
 import static com.artem.drop.GameConstants.MAIN_MENU_TITLE_TEXT;
+import static com.artem.drop.GameConstants.MAIN_MENU_TITLE_Y_FRACTION;
 
 @Slf4j
 public class MainMenuScreen implements Screen {
@@ -53,9 +55,8 @@ public class MainMenuScreen implements Screen {
         spriteBatch.end();
 
         if (handleStartGameRequest()) {
-            gameContext.defaultScreenNavigator().showGame();
-            log.info("Game Screen Loaded.");
-            log.info("Game started.");
+            gameContext.defaultScreenNavigator().showRainIntro();
+            log.info("Rain intro screen loaded.");
         }
     }
 
@@ -68,8 +69,8 @@ public class MainMenuScreen implements Screen {
 
         BitmapFont font = assetService.getMenuFont();
 
-        drawCenteredText(spriteBatch, font, MAIN_MENU_TITLE_TEXT, worldWidth, worldHeight * 0.35f);
-        drawCenteredText(spriteBatch, font, MAIN_MENU_SUB_TITLE_TEXT, worldWidth, worldHeight * 0.20f);
+        drawCenteredText(spriteBatch, font, MAIN_MENU_TITLE_TEXT, worldWidth, worldHeight * MAIN_MENU_TITLE_Y_FRACTION);
+        drawCenteredText(spriteBatch, font, MAIN_MENU_SUB_TITLE_TEXT, worldWidth, worldHeight * MAIN_MENU_SUBTITLE_Y_FRACTION);
     }
 
     private void drawCenteredText(SpriteBatch spriteBatch, BitmapFont font, String text,

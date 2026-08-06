@@ -27,7 +27,10 @@ import static com.artem.drop.GameConstants.GAME_MAIN_MENU_TEXT;
 import static com.artem.drop.GameConstants.GAME_PAUSED_TEXT;
 import static com.artem.drop.GameConstants.GAME_RESTART_TEXT;
 import static com.artem.drop.GameConstants.HUD_LINE_SPACING;
+import static com.artem.drop.GameConstants.PAUSE_OVERLAY_EXIT_OPTION_LINE;
 import static com.artem.drop.GameConstants.PAUSE_OVERLAY_LINE_SPACING;
+import static com.artem.drop.GameConstants.PAUSE_OVERLAY_MAIN_MENU_OPTION_LINE;
+import static com.artem.drop.GameConstants.PAUSE_OVERLAY_RESTART_OPTION_LINE;
 
 @Slf4j
 public class GameScreen implements Screen {
@@ -241,9 +244,9 @@ public class GameScreen implements Screen {
 
         pauseFont.draw(spriteBatch, pausedLayout, x, y);
 
-        drawPauseOverlayOption(assetService.getExitFont(), exitLayout, GAME_EXIT_TEXT, y, 1);
-        drawPauseOverlayOption(assetService.getRestartFont(), restartLayout, GAME_RESTART_TEXT, y, 2);
-        drawPauseOverlayOption(assetService.getBackToMenuFont(), mainMenuLayout, GAME_MAIN_MENU_TEXT, y, 3);
+        drawPauseOverlayOption(assetService.getExitFont(), exitLayout, GAME_EXIT_TEXT, y, PAUSE_OVERLAY_EXIT_OPTION_LINE);
+        drawPauseOverlayOption(assetService.getRestartFont(), restartLayout, GAME_RESTART_TEXT, y, PAUSE_OVERLAY_RESTART_OPTION_LINE);
+        drawPauseOverlayOption(assetService.getBackToMenuFont(), mainMenuLayout, GAME_MAIN_MENU_TEXT, y, PAUSE_OVERLAY_MAIN_MENU_OPTION_LINE);
     }
 
     private void drawPauseOverlayOption(BitmapFont font, GlyphLayout layout, String text,

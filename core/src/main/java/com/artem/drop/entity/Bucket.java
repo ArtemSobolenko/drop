@@ -2,17 +2,19 @@ package com.artem.drop.entity;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import static com.artem.drop.GameConstants.BUCKET_GRAVITY;
+import static com.artem.drop.GameConstants.BUCKET_JUMP_SPEED;
+import static com.artem.drop.GameConstants.GROUND_Y;
+import static com.artem.drop.GameConstants.WORLD_MIN_X;
+
 public class Bucket extends SpriteEntity {
 
     private float velocityY = 0f;
     private boolean onGround = true;
 
-    private static final float GRAVITY = -15f;
-    private static final float JUMP_SPEED = 7f;
-
     public Bucket(Sprite sprite) {
         super(sprite);
-        setPosition(0f, 0f);
+        setPosition(WORLD_MIN_X, GROUND_Y);
     }
 
     public void move(float dx) {
@@ -32,20 +34,20 @@ public class Bucket extends SpriteEntity {
 
     public void jump() {
         if (onGround) {
-            velocityY = JUMP_SPEED;
+            velocityY = BUCKET_JUMP_SPEED;
             onGround = false;
         }
     }
 
     public void update(float delta) {
 
-        velocityY += GRAVITY * delta;
+        velocityY += BUCKET_GRAVITY * delta;
 
         sprite.translateY(velocityY * delta);
 
-        if (sprite.getY() <= 0) {
-            sprite.setY(0);
-            velocityY = 0;
+        if (sprite.getY() <= GROUND_Y) {
+            sprite.setY(GROUND_Y);
+            velocityY = 0f;
             onGround = true;
         }
 

@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import lombok.Getter;
 
+import static com.artem.drop.GameConstants.ENTITY_SIZE;
+
 /**
  * Common sprite + AABB bounds wrapper shared by every game entity. Bounds are
  * recomputed from the sprite on every mutation so getBounds() is always
@@ -19,7 +21,7 @@ public abstract class SpriteEntity {
 
     protected SpriteEntity(Sprite sprite) {
         this.sprite = sprite;
-        this.sprite.setSize(1f, 1f);
+        this.sprite.setSize(ENTITY_SIZE, ENTITY_SIZE);
         updateBounds();
     }
 

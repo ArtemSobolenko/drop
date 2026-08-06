@@ -10,6 +10,7 @@ import lombok.Getter;
 
 import static com.artem.drop.GameConstants.DEFAULT_DROPLET_CREATION_DELAY;
 import static com.artem.drop.GameConstants.WORLD_HEIGHT;
+import static com.artem.drop.GameConstants.WORLD_MIN_X;
 import static com.artem.drop.GameConstants.WORLD_WIDTH;
 
 /**
@@ -94,13 +95,13 @@ public class GameWorld {
 
     private void spawnDrop() {
         Drop drop = new Drop(new Sprite(assetService.getDropTexture()));
-        drop.setX(MathUtils.random(0f, WORLD_WIDTH - drop.getWidth()));
+        drop.setX(MathUtils.random(WORLD_MIN_X, WORLD_WIDTH - drop.getWidth()));
         drop.setY(WORLD_HEIGHT);
 
         drops.add(drop);
     }
 
     private void clampBucket() {
-        bucket.setX(MathUtils.clamp(bucket.getX(), 0f, WORLD_WIDTH - bucket.getWidth()));
+        bucket.setX(MathUtils.clamp(bucket.getX(), WORLD_MIN_X, WORLD_WIDTH - bucket.getWidth()));
     }
 }

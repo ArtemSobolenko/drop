@@ -5,6 +5,7 @@ import com.artem.drop.context.GameContext;
 import com.artem.drop.input.PlayerInput;
 import com.artem.drop.screen.GameScreen;
 import com.artem.drop.screen.MainMenuScreen;
+import com.artem.drop.screen.RainIntroScreen;
 import com.artem.drop.state.GameState;
 import com.artem.drop.support.GdxTestEnvironment;
 import com.badlogic.gdx.Screen;
@@ -57,6 +58,15 @@ class DefaultScreenNavigatorTest {
         ArgumentCaptor<Screen> captor = ArgumentCaptor.forClass(Screen.class);
         verify(game).setScreen(captor.capture());
         assertInstanceOf(MainMenuScreen.class, captor.getValue());
+    }
+
+    @Test
+    void showRainIntroSwitchesToRainIntroScreen() {
+        game.getContext().defaultScreenNavigator().showRainIntro();
+
+        ArgumentCaptor<Screen> captor = ArgumentCaptor.forClass(Screen.class);
+        verify(game).setScreen(captor.capture());
+        assertInstanceOf(RainIntroScreen.class, captor.getValue());
     }
 
     @Test

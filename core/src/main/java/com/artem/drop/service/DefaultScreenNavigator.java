@@ -4,6 +4,7 @@ import com.artem.drop.DropGame;
 import com.artem.drop.context.GameContext;
 import com.artem.drop.screen.GameScreen;
 import com.artem.drop.screen.MainMenuScreen;
+import com.artem.drop.screen.RainIntroScreen;
 import com.artem.drop.world.GameWorld;
 
 public class DefaultScreenNavigator implements ScreenNavigator {
@@ -19,6 +20,11 @@ public class DefaultScreenNavigator implements ScreenNavigator {
         GameContext context = game.getContext();
         context.assetService().ensureMainMenuAssetsLoaded();
         game.setScreen(new MainMenuScreen(context));
+    }
+
+    @Override
+    public void showRainIntro() {
+        game.setScreen(new RainIntroScreen(game.getContext()));
     }
 
     @Override

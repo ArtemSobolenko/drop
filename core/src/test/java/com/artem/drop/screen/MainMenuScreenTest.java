@@ -91,7 +91,7 @@ class MainMenuScreenTest {
 
         assertDoesNotThrow(() -> screen.render(0.1f));
 
-        verify(navigator, never()).showGame();
+        verify(navigator, never()).showRainIntro();
     }
 
     @Test
@@ -100,25 +100,25 @@ class MainMenuScreenTest {
 
         assertDoesNotThrow(() -> screen.render(0.1f));
 
-        verify(navigator, never()).showGame();
+        verify(navigator, never()).showRainIntro();
     }
 
     @Test
-    void renderWhenTouchedNavigatesToGameScreen() {
+    void renderWhenTouchedNavigatesToRainIntroScreen() {
         when(playerInput.isTouched()).thenReturn(true);
 
         screen.render(0.1f);
 
-        verify(navigator).showGame();
+        verify(navigator).showRainIntro();
     }
 
     @Test
-    void renderWhenConsumeStartGameRequestNavigatesToGameScreen() {
+    void renderWhenConsumeStartGameRequestNavigatesToRainIntroScreen() {
         when(inputProcessor.consumeStartGameRequest()).thenReturn(true);
 
         screen.render(0.1f);
 
-        verify(navigator).showGame();
+        verify(navigator).showRainIntro();
     }
 
     @Test
