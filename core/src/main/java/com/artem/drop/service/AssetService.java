@@ -10,27 +10,26 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import lombok.Getter;
 
 import static com.artem.drop.GameConstants.BACKGROUND_TEXTURE;
+import static com.artem.drop.GameConstants.BACK_TO_MENU_FONT_SIZE;
 import static com.artem.drop.GameConstants.BUCKET_TEXTURE;
 import static com.artem.drop.GameConstants.DEFAULT_VOLUME;
 import static com.artem.drop.GameConstants.DROP_MISS_SOUND;
 import static com.artem.drop.GameConstants.DROP_SOUND;
 import static com.artem.drop.GameConstants.DROP_TEXTURE;
+import static com.artem.drop.GameConstants.GAME_EXIT_FONT_SIZE;
 import static com.artem.drop.GameConstants.GAME_MUSIC;
+import static com.artem.drop.GameConstants.GAME_RESTART_FONT_SIZE;
+import static com.artem.drop.GameConstants.HUD_FONT_SIZE;
 import static com.artem.drop.GameConstants.MAIN_BACKGROUND_TEXTURE;
 import static com.artem.drop.GameConstants.MAIN_MENU_MUSIC;
+import static com.artem.drop.GameConstants.MENU_FONT_SIZE;
+import static com.artem.drop.GameConstants.PAUSE_FONT_SIZE;
 import static com.artem.drop.GameConstants.ROBOTO_REGULAR_FRONT;
 import static com.artem.drop.GameConstants.SPEED_SOUND;
 import static com.artem.drop.GameConstants.THUNDER_INTRO_SOUND;
 import static com.artem.drop.GameConstants.WORLD_HEIGHT;
 
 public class AssetService {
-
-    private static final int HUD_FONT_SIZE = 24;
-    private static final int MENU_FONT_SIZE = 36;
-    private static final int PAUSE_FONT_SIZE = 64;
-    private static final int GAME_EXIT_FONT_SIZE = 18;
-    private static final int GAME_RESTART_FONT_SIZE = 18;
-    private static final int BACK_TO_MENU_FONT_SIZE = 18;
 
     private final AssetManager assetManager;
     private final FreeTypeFontGenerator fontGenerator;

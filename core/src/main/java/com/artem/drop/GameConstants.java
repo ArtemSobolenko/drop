@@ -40,9 +40,9 @@ public final class GameConstants {
     public static final int HUD_FONT_SIZE = 24;
     public static final int MENU_FONT_SIZE = 36;
     public static final int PAUSE_FONT_SIZE = 64;
-    public static final int GAME_EXIT_FONT_SIZE = 36;
-    public static final int GAME_RESTART_FONT_SIZE = 36;
-    public static final int BACK_TO_MENU_FONT_SIZE = 36;
+    public static final int GAME_EXIT_FONT_SIZE = 22;
+    public static final int GAME_RESTART_FONT_SIZE = 22;
+    public static final int BACK_TO_MENU_FONT_SIZE = 22;
 
     public static final String BACKGROUND_TEXTURE = "images/background.png";
     public static final String MAIN_BACKGROUND_TEXTURE = "images/main_background.png";
