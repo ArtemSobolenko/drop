@@ -79,6 +79,7 @@ class GameWorldIntegrationTest {
     @Test
     void catchingADropIncrementsGatheredCountAndPlaysSound() {
         world.update(DEFAULT_DROPLET_CREATION_DELAY + 0.01f);
+
         Drop drop = world.getDrops().first();
         drop.setX(world.getBucket().getX());
         drop.setY(world.getBucket().getY());
